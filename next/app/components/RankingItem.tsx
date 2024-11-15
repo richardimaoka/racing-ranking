@@ -13,8 +13,10 @@ const intervalFormatter = new Intl.NumberFormat("en", {
   minimumFractionDigits: 4,
 });
 
+export type RankingItemProps = Props;
+
 export function RankingItem(props: Props) {
-  return ( 
+  return (
     <div className={styles.component}>
       <div className={styles.ranking}>{props.ranking}</div>
       <Image
