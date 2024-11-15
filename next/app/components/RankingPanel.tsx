@@ -1,3 +1,4 @@
+import { PanelHeader } from "./PanelHeader";
 import { RankingItem } from "./RankingItem";
 import styles from "./RankingPanel.module.css";
 
@@ -105,16 +106,19 @@ export function RankingPanel() {
 
   return (
     <div className={styles.component}>
-      {items.map((x) => (
-        <RankingItem
-          key={x.name}
-          team={x.team}
-          teamIconPath={x.teamIconPath}
-          name={x.name}
-          ranking={x.ranking}
-          interval={x.interval}
-        />
-      ))}
+      <PanelHeader />
+      <div>
+        {items.map((x) => (
+          <RankingItem
+            key={x.name}
+            team={x.team}
+            teamIconPath={x.teamIconPath}
+            name={x.name}
+            ranking={x.ranking}
+            interval={x.interval}
+          />
+        ))}
+      </div>
     </div>
   );
 }
