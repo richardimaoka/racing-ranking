@@ -1,8 +1,9 @@
 .component {
   display: grid;
-  grid-template-columns: 3rem 1fr auto;
-  grid-template-areas: "left center right";
+  grid-template-columns: 1rem 24px 1fr auto;
   align-items: center;
+
+  column-gap: 8px;
 
   padding-top: 2px;
   padding-bottom: 2px;
@@ -10,17 +11,22 @@
   padding-right: 16px;
 }
 
-.component > *:nth-child(1) {
+.ranking {
+  justify-self: end;
+  color: white;
+}
+
+.icon {
+  justify-self: end;
+  color: white;
+}
+
+.name {
   justify-self: start;
   color: white;
 }
 
-.component > *:nth-child(2) {
-  justify-self: start;
-  color: white;
-}
-
-.component > *:nth-child(3) {
+.interval {
   justify-self: end;
   color: white;
 }

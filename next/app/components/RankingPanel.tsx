@@ -7,6 +7,7 @@ export function RankingPanel() {
       ranking: 1,
       name: "S. Austin",
       team: "H",
+      teamIconPath: "/images/H.png",
       change: "",
       fastest: "",
     },
@@ -14,6 +15,7 @@ export function RankingPanel() {
       ranking: 2,
       name: "S. Rene",
       team: "H",
+      teamIconPath: "/images/H.png",
       interval: 7.999,
       change: "",
       fastest: "",
@@ -21,7 +23,8 @@ export function RankingPanel() {
     {
       ranking: 3,
       name: "A. Fons",
-      team: "A",
+      team: "5",
+      teamIconPath: "/images/5.png",
       interval: 2.345,
       change: "",
       fastest: "",
@@ -30,6 +33,7 @@ export function RankingPanel() {
       ranking: 4,
       name: "M. Kristian",
       team: "P",
+      teamIconPath: "/images/P.png",
       interval: 3.146,
       change: "",
       fastest: "",
@@ -37,7 +41,8 @@ export function RankingPanel() {
     {
       ranking: 5,
       name: "K. Maik",
-      team: "A",
+      team: "5",
+      teamIconPath: "/images/5.png",
       interval: 0.15,
       change: "",
       fastest: "",
@@ -46,6 +51,7 @@ export function RankingPanel() {
       ranking: 6,
       name: "G. Freddie",
       team: "D",
+      teamIconPath: "/images/D.png",
       interval: 8.557,
       change: "",
       fastest: "",
@@ -53,7 +59,8 @@ export function RankingPanel() {
     {
       ranking: 7,
       name: "R. Mateus",
-      team: "T",
+      team: "t",
+      teamIconPath: "/images/t.png",
       interval: 9.655,
       change: "",
       fastest: "",
@@ -61,7 +68,8 @@ export function RankingPanel() {
     {
       ranking: 8,
       name: "R. Miguel",
-      team: "T",
+      team: "t",
+      teamIconPath: "/images/t.png",
       interval: 13.452,
       change: "",
       fastest: "",
@@ -70,6 +78,7 @@ export function RankingPanel() {
       ranking: 9,
       name: "S. Wiktor",
       team: "D",
+      teamIconPath: "/images/D.png",
       interval: 0.879,
       change: "",
       fastest: "",
@@ -78,6 +87,7 @@ export function RankingPanel() {
       ranking: 10,
       name: "O. Odín",
       team: "P",
+      teamIconPath: "/images/P.png",
       interval: 9.657,
       change: "",
       fastest: "",
@@ -85,7 +95,8 @@ export function RankingPanel() {
     {
       ranking: 11,
       name: "F. Tain",
-      team: "A",
+      team: "5",
+      teamIconPath: "/images/5.png",
       interval: 14.548,
       change: "",
       fastest: "",
@@ -97,6 +108,8 @@ export function RankingPanel() {
       {items.map((x) => (
         <RankingItem
           key={x.name}
+          team={x.team}
+          teamIconPath={x.teamIconPath}
           name={x.name}
           ranking={x.ranking}
           interval={x.interval}
