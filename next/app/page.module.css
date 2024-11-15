@@ -1,7 +1,19 @@
 .page {
   display: grid;
+  grid-template-areas: "center";
   align-items: center;
   justify-items: center;
 
+  width: 100svw;
   height: 100svh;
+}
+
+.page > * {
+  grid-area: center;
+}
+
+.background {
+  width: 100svw;
+  height: 100svh;
+  object-fit: cover;
 }
