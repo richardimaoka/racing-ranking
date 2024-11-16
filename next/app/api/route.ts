@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import { readFile } from "node:fs/promises";
 
 interface RankingItemProps {
@@ -8,21 +9,17 @@ interface RankingItemProps {
   interval?: number;
 }
 
-let currentIndex = 1;
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const countStr = searchParams.get("count");
+  const count = countStr ? Number(countStr) : 1;
 
-export async function GET() {
   const fileContents = await readFile(
-    process.cwd() + `/app/api/data/${currentIndex}.json`,
+    process.cwd() + `/app/api/data/${count}.json`,
     "utf8"
   );
-  
-  if (currentIndex === 1) {
-    currentIndex = 2;
-  } else if (currentIndex === 2) {
-    currentIndex = 1;
-  }
 
-  console.log("current index", currentIndex);
+  console.log("count", count);
 
   const items = JSON.parse(fileContents) as RankingItemProps[];
 

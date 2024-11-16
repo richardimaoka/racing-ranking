@@ -8,20 +8,28 @@ interface Props {
   items: RankingItemProps[];
 }
 
-export function RankingPanelnner(props: Props) {
+export function RankingPanelState(props: Props) {
+  const maxCount = 2;
+  const [count, setCount] = useState(1);
   const [items, setItems] = useState(props.items);
 
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
-      const res = await fetch("/api");
+      const res = await fetch(`/api?count=${count}`);
       const newItems = await res.json();
       setItems(newItems);
+
+      if (count < maxCount) {
+        setCount(count + 1);
+      } else {
+        setCount(1);
+      }
     }, 1000);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [items]);
+  }, [count]);
 
   return <RankingPanelLayout items={items} />;
 }
