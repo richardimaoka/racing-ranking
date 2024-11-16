@@ -8,6 +8,11 @@ interface Props {
   ranking: number;
   name: string;
   interval?: number;
+  next?: {
+    ranking: number;
+    interval?: number;
+    animationEnd: boolean;
+  };
 }
 
 const intervalFormatter = new Intl.NumberFormat("en", {
