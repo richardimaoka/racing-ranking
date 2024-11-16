@@ -3,6 +3,7 @@
   max-width: 100svw;
 
   background-color: #353432;
+  background-color: rgba(53, 52, 50, 0.8);
 }
 
 .component > *:nth-child(2) {
