@@ -1,0 +1,25 @@
+.component {
+  color: white;
+  position: relative;
+  font-size: 3rem;
+}
+
+.component > *:nth-child(3) {
+  position: relative;
+  top: 0px;
+  transition: top 1s;
+}
+
+.component > *:nth-child(3).animate {
+  top: 310px;
+}
+
+.component > *:nth-child(5) {
+  position: relative;
+  top: 0px;
+  transition: top 5s;
+}
+
+.component > *:nth-child(5).animate {
+  top: -410px;
+}
