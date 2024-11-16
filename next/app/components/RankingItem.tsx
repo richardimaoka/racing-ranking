@@ -23,7 +23,9 @@ const robotoMono = Roboto_Mono({
 export function RankingItem(props: Props) {
   return (
     <div className={styles.component}>
-      <div className={styles.ranking}>{props.ranking}</div>
+      <div className={`${styles.ranking} ${robotoMono.className}`}>
+        {props.ranking}
+      </div>
       <Image
         className={styles.icon}
         src={props.teamIconPath}

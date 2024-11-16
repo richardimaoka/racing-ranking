@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function RankingPanelState(props: Props) {
-  const maxCount = 2;
+  const maxCount = 3;
   const [count, setCount] = useState(1);
   const [items, setItems] = useState(props.items);
 
