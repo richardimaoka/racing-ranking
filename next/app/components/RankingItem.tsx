@@ -34,9 +34,15 @@ export function RankingItem(props: Props) {
         height={16}
       />
       <div className={styles.name}>{props.name}</div>
-      <div className={`${styles.interval} ${robotoMono.className}`}>
-        {props.interval && intervalFormatter.format(props.interval)}
-      </div>
+      {props.ranking === 1 ? (
+        <div className={`${styles.interval} ${robotoMono.className}`}>
+          LEADER
+        </div>
+      ) : (
+        <div className={`${styles.interval} ${robotoMono.className}`}>
+          {props.interval && "+" + intervalFormatter.format(props.interval)}
+        </div>
+      )}
     </div>
   );
 }
