@@ -8,9 +8,11 @@ interface RankingItemProps {
   interval?: number;
 }
 
+const currentIndex = 1;
+
 export async function readData(): Promise<RankingItemProps[]> {
   const fileContents = await readFile(
-    process.cwd() + "/app/data/1.json",
+    process.cwd() + `/app/data/${currentIndex}.json`,
     "utf8"
   );
 
