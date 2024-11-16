@@ -141,23 +141,5 @@
     "interval": 10.072,
     "change": "",
     "fastest": ""
-  },
-  {
-    "ranking": 17,
-    "name": "M. James",
-    "team": "S",
-    "teamIconPath": "/images/S.png",
-    "interval": 14.94,
-    "change": "",
-    "fastest": ""
-  },
-  {
-    "ranking": 18,
-    "name": "S. John",
-    "team": "S",
-    "teamIconPath": "/images/S.png",
-    "interval": 23.093,
-    "change": "",
-    "fastest": ""
   }
 ]

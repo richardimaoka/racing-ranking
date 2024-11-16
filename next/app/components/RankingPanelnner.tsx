@@ -13,7 +13,7 @@ export function RankingPanelnner(props: Props) {
 
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
-      const res = await fetch("http://localhost:3000/api");
+      const res = await fetch("/api");
       const newItems = await res.json();
       setItems(newItems);
     }, 1000);

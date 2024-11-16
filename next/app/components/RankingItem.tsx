@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "./RankingItem.module.css";
+import { Roboto_Mono } from "next/font/google";
 
 interface Props {
   team: string;
@@ -15,6 +16,10 @@ const intervalFormatter = new Intl.NumberFormat("en", {
 
 export type RankingItemProps = Props;
 
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+});
+
 export function RankingItem(props: Props) {
   return (
     <div className={styles.component}>
@@ -27,7 +32,7 @@ export function RankingItem(props: Props) {
         height={16}
       />
       <div className={styles.name}>{props.name}</div>
-      <div className={styles.interval}>
+      <div className={`${styles.interval} ${robotoMono.className}`}>
         {props.interval && intervalFormatter.format(props.interval)}
       </div>
     </div>
