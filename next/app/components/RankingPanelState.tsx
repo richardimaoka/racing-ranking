@@ -5,31 +5,45 @@ import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingItemProps } from "./RankingItem";
 
 interface Props {
-  items: RankingItemProps[];
+  initialItems: RankingItemProps[];
+}
+
+function constructItems(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  return nextItems;
+}
+
+function incrementCount(count: number) {
+  const maxCount = 3;
+  if (count < maxCount) {
+    return count + 1;
+  } else {
+    return 1;
+  }
 }
 
 export function RankingPanelState(props: Props) {
-  const maxCount = 3;
   const [count, setCount] = useState(1);
-  const [items, setItems] = useState(props.items);
 
+  const initialItems = constructItems(props.initialItems, props.initialItems);
+  const [items, setItems] = useState(initialItems);
+
+  // Fetch the next data
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       const res = await fetch(`/api?count=${count}`);
       const newItems = await res.json();
-      setItems(newItems);
+      setItems(constructItems(items, newItems));
 
-      if (count < maxCount) {
-        setCount(count + 1);
-      } else {
-        setCount(1);
-      }
+      setCount(incrementCount(count));
     }, 1000);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [count]);
+  }, [count, items]);
 
   return <RankingPanelLayout items={items} />;
 }
