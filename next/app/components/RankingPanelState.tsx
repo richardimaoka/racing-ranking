@@ -14,17 +14,59 @@ function augmentNextInfo(
 ): RankingItemProps[] {
   const augmentedItems = currentItems.map((current) => {
     const next = nextItems.find((n) => n.name === current.name);
-    return {
+    const item = {
       ...current,
+      // if next matching item is found, then fill in properties
+      // else if not found, then `next: undefined`
       next: next && {
         ranking: next.ranking,
         interval: next.interval,
         animationEnd: current.ranking === next.ranking,
       },
     };
+    return item;
   });
 
   return augmentedItems;
+}
+
+function attachEventListener(
+  items: RankingItemProps[],
+  setItems: (items: RankingItemProps[]) => void
+): RankingItemProps[] {
+  const updatedItems = items.map((item) => {
+    if (item.next) {
+      item.next.onTransitionEnd = () => {
+        const updatedItems = endAnimation(item.ranking, items);
+        setItems(updatedItems);
+      };
+    }
+
+    return item;
+  });
+
+  return updatedItems;
+}
+
+function transitionToNext(
+  currentItems: RankingItemProps[]
+): RankingItemProps[] {
+  const updatedItems = currentItems.map((current) => {
+    const next = current.next;
+    delete current.next;
+
+    return {
+      ...current,
+      ranking: next ? next.ranking : current.ranking,
+      interval: next ? next.interval : current.interval,
+    };
+  });
+
+  updatedItems.sort((a, b) => {
+    return a.ranking - b.ranking;
+  });
+
+  return updatedItems;
 }
 
 function endAnimation(rank: number, items: RankingItemProps[]) {
@@ -44,19 +86,22 @@ function endAnimation(rank: number, items: RankingItemProps[]) {
   return updatedItems;
 }
 
-function transitionToNext(
-  currentItems: RankingItemProps[]
-): RankingItemProps[] {
-  const augmentedItems = currentItems.map((current) => {
-    const next = current.next;
-    return {
-      ...current,
-      ranking: next ? next.ranking : current.ranking,
-      interval: next ? next.interval : current.interval,
-    };
-  });
+function isAnimationFinished(items: RankingItemProps[]) {
+  const animationEndFlags = items
+    .map((i) => i.next?.animationEnd)
+    .filter((i) => i !== undefined);
 
-  return augmentedItems;
+  const stillAnimatingItem = animationEndFlags.findIndex((i) => i === false);
+  console.log("still animating index", stillAnimatingItem);
+  if (stillAnimatingItem === -1) {
+    // if no animating item left, finished!
+    console.log("animation finished");
+    return true;
+  } else {
+    // still animating item is remaining
+    console.log("still animating");
+    return false;
+  }
 }
 
 function incrementCount(count: number) {
@@ -70,11 +115,16 @@ function incrementCount(count: number) {
 
 type Phase = "fetch" | "sort" | "done";
 
-async function updateItems(count: number, currentItems: RankingItemProps[]) {
+async function updateItems(
+  count: number,
+  currentItems: RankingItemProps[],
+  setItems: (items: RankingItemProps[]) => void
+) {
   const res = await fetch(`/api?count=${count}`);
   const nextItems = await res.json();
   const augmentedItems = augmentNextInfo(currentItems, nextItems);
-  return augmentedItems;
+  const newItems = attachEventListener(augmentedItems, setItems);
+  return newItems;
 }
 
 export function RankingPanelState(props: Props) {
@@ -85,13 +135,13 @@ export function RankingPanelState(props: Props) {
   useEffect(() => {
     // Fetch the next data
     if (phase === "fetch") {
-      const timeoutId = setTimeout(async () => {
-        if (count === 3) {
-          return;
-        }
-        const updatedItems = await updateItems(count, items);
-        setItems(updatedItems);
+      if (count === 3) {
+        return;
+      }
 
+      const timeoutId = setTimeout(async () => {
+        const updatedItems = await updateItems(count, items, setItems);
+        setItems(updatedItems);
         setPhase("sort");
       }, 1000);
 
@@ -103,40 +153,29 @@ export function RankingPanelState(props: Props) {
 
   useEffect(() => {
     if (phase === "sort") {
-      const animationEndFlags = items
-        .map((i) => i.next?.animationEnd)
-        .filter((i) => i !== undefined);
-
-      const firstItemInAnimation = animationEndFlags.findIndex(
-        (i) => i === false
-      );
-
+      const finished = isAnimationFinished(items);
       // If all items finished animation
-      if (firstItemInAnimation === -1) {
+      if (finished) {
         setPhase("done");
-        setCount(incrementCount(count));
       }
+      // setPhase("done");
     }
   }, [phase, items, count]);
 
   useEffect(() => {
     if (phase === "done") {
+      const updatedItems = transitionToNext(items);
+      setItems(updatedItems);
+      setPhase("fetch");
+      setCount(incrementCount(count));
     }
   }, [phase, items, count]);
 
-  const itemsWithEventLister = items.map((item) => {
-    return {
-      ...item,
-      onTransitionEnd:
-        item.next &&
-        (() => {
-          const updatedItems = endAnimation(item.ranking, items);
-          setItems(updatedItems);
-        }),
-    };
-  });
+  console.log(
+    count,
+    phase,
+    items.map((i) => i.next)
+  );
 
-  console.log(count, phase, itemsWithEventLister);
-
-  return <RankingPanelLayout items={itemsWithEventLister} />;
+  return <RankingPanelLayout items={items} />;
 }

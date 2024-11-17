@@ -19,6 +19,7 @@ export function RankingPanelLayout(props: Props) {
             name={x.name}
             ranking={x.ranking}
             interval={x.interval}
+            next={x.next}
           />
         ))}
       </div>

@@ -12,6 +12,11 @@
 
   /* for transition */
   position: relative;
+  transition: 0.5s transform;
+}
+
+.component.next {
+  transform: translateY(30px);
 }
 
 .ranking {

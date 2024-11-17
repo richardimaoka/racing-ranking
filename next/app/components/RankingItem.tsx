@@ -12,15 +12,15 @@ interface Props {
     ranking: number;
     interval?: number;
     animationEnd: boolean;
+    onTransitionEnd?: () => void;
   };
-  onTransitionEnd?: () => void;
 }
+
+export type RankingItemProps = Props;
 
 const intervalFormatter = new Intl.NumberFormat("en", {
   minimumFractionDigits: 4,
 });
-
-export type RankingItemProps = Props;
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -28,7 +28,12 @@ const robotoMono = Roboto_Mono({
 
 export function RankingItem(props: Props) {
   return (
-    <div className={styles.component} onTransitionEnd={props.onTransitionEnd}>
+    <div
+      className={
+        props.next ? `${styles.component} ${styles.next}` : styles.component
+      }
+      onTransitionEnd={props.next?.onTransitionEnd}
+    >
       <div className={`${styles.ranking} ${robotoMono.className}`}>
         {props.ranking}
       </div>
