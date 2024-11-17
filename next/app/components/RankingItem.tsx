@@ -13,6 +13,7 @@ interface Props {
     interval?: number;
     animationEnd: boolean;
   };
+  onTransitionEnd?: () => void;
 }
 
 const intervalFormatter = new Intl.NumberFormat("en", {
@@ -27,7 +28,7 @@ const robotoMono = Roboto_Mono({
 
 export function RankingItem(props: Props) {
   return (
-    <div className={styles.component}>
+    <div className={styles.component} onTransitionEnd={props.onTransitionEnd}>
       <div className={`${styles.ranking} ${robotoMono.className}`}>
         {props.ranking}
       </div>
