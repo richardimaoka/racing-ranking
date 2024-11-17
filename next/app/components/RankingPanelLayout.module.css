@@ -6,7 +6,9 @@
   background-color: rgba(53, 52, 50, 0.8);
 }
 
-.component > *:nth-child(2) {
+.rankingList {
+  display: grid;
+
   padding-top: 8px;
   padding-bottom: 8px;
 }

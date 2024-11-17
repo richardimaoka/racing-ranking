@@ -10,7 +10,7 @@ export function RankingPanelLayout(props: Props) {
   return (
     <div className={styles.component}>
       <PanelHeader />
-      <div>
+      <div className={styles.rankingList}>
         {props.items.map((x) => (
           <RankingItem
             key={x.name}

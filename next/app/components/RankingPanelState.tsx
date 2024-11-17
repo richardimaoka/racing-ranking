@@ -38,6 +38,7 @@ function attachEventListener(
     if (item.next) {
       item.next.onTransitionEnd = () => {
         const updatedItems = endAnimation(item.ranking, items);
+        console.log("transition finished", item.ranking, updatedItems);
         setItems(updatedItems);
       };
     }
@@ -53,8 +54,7 @@ function transitionToNext(
 ): RankingItemProps[] {
   const updatedItems = currentItems.map((current) => {
     const next = current.next;
-    delete current.next;
-
+    current.next = undefined;
     return {
       ...current,
       ranking: next ? next.ranking : current.ranking,
@@ -72,8 +72,10 @@ function transitionToNext(
 function endAnimation(rank: number, items: RankingItemProps[]) {
   const updatedItems = items.map((item) => {
     if (item.ranking === rank) {
+      console.log("end animation");
       const updated = { ...item };
-      if (updated.next?.animationEnd) {
+      if (updated.next) {
+        console.log("end animation flag updated");
         updated.next.animationEnd = true;
       }
 
@@ -92,14 +94,12 @@ function isAnimationFinished(items: RankingItemProps[]) {
     .filter((i) => i !== undefined);
 
   const stillAnimatingItem = animationEndFlags.findIndex((i) => i === false);
-  console.log("still animating index", stillAnimatingItem);
+
   if (stillAnimatingItem === -1) {
     // if no animating item left, finished!
-    console.log("animation finished");
     return true;
   } else {
     // still animating item is remaining
-    console.log("still animating");
     return false;
   }
 }
@@ -113,7 +113,7 @@ function incrementCount(count: number) {
   }
 }
 
-type Phase = "fetch" | "sort" | "done";
+type Phase = "fetch" | "sort" | "done" | "stop";
 
 async function updateItems(
   count: number,
@@ -131,6 +131,7 @@ export function RankingPanelState(props: Props) {
   const [phase, setPhase] = useState<Phase>("fetch");
   const [count, setCount] = useState(2); //2 = next count
   const [items, setItems] = useState(props.initialItems);
+  console.log(count, phase, items);
 
   useEffect(() => {
     // Fetch the next data
@@ -154,6 +155,9 @@ export function RankingPanelState(props: Props) {
   useEffect(() => {
     if (phase === "sort") {
       const finished = isAnimationFinished(items);
+
+      console.log("is animation finished??", finished);
+
       // If all items finished animation
       if (finished) {
         setPhase("done");
@@ -164,18 +168,15 @@ export function RankingPanelState(props: Props) {
 
   useEffect(() => {
     if (phase === "done") {
+      console.log(count, "done previous items", items);
       const updatedItems = transitionToNext(items);
       setItems(updatedItems);
-      setPhase("fetch");
+      console.log(count, "done updated items", updatedItems);
+
+      setPhase("stop");
       setCount(incrementCount(count));
     }
   }, [phase, items, count]);
-
-  console.log(
-    count,
-    phase,
-    items.map((i) => i.next)
-  );
 
   return <RankingPanelLayout items={items} />;
 }
