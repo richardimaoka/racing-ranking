@@ -19,7 +19,7 @@ function augmentNextInfo(
       next: next && {
         ranking: next.ranking,
         interval: next.interval,
-        animationEnd: false,
+        animationEnd: current.ranking === next.ranking,
       },
     };
   });
@@ -68,23 +68,31 @@ function incrementCount(count: number) {
   }
 }
 
-type Phase = "fetching";
+type Phase = "fetch" | "sort" | "done";
+
+async function updateItems(count: number, currentItems: RankingItemProps[]) {
+  const res = await fetch(`/api?count=${count}`);
+  const nextItems = await res.json();
+  const augmentedItems = augmentNextInfo(currentItems, nextItems);
+  return augmentedItems;
+}
 
 export function RankingPanelState(props: Props) {
-  const [phase, setPhase] = useState<Phase>("fetching");
-  const [count, setCount] = useState(1);
+  const [phase, setPhase] = useState<Phase>("fetch");
+  const [count, setCount] = useState(2); //2 = next count
   const [items, setItems] = useState(props.initialItems);
 
   useEffect(() => {
     // Fetch the next data
-    if (phase === "fetching") {
+    if (phase === "fetch") {
       const timeoutId = setTimeout(async () => {
-        const res = await fetch(`/api?count=${count}`);
-        const newItems = await res.json();
-        setItems(newItems);
+        if (count === 3) {
+          return;
+        }
+        const updatedItems = await updateItems(count, items);
+        setItems(updatedItems);
 
-        setCount(incrementCount(count));
-        setPhase("fetching");
+        setPhase("sort");
       }, 1000);
 
       return () => {
@@ -92,6 +100,29 @@ export function RankingPanelState(props: Props) {
       };
     }
   }, [phase, count, items]);
+
+  useEffect(() => {
+    if (phase === "sort") {
+      const animationEndFlags = items
+        .map((i) => i.next?.animationEnd)
+        .filter((i) => i !== undefined);
+
+      const firstItemInAnimation = animationEndFlags.findIndex(
+        (i) => i === false
+      );
+
+      // If all items finished animation
+      if (firstItemInAnimation === -1) {
+        setPhase("done");
+        setCount(incrementCount(count));
+      }
+    }
+  }, [phase, items, count]);
+
+  useEffect(() => {
+    if (phase === "done") {
+    }
+  }, [phase, items, count]);
 
   const itemsWithEventLister = items.map((item) => {
     return {
@@ -104,6 +135,8 @@ export function RankingPanelState(props: Props) {
         }),
     };
   });
+
+  console.log(count, phase, itemsWithEventLister);
 
   return <RankingPanelLayout items={itemsWithEventLister} />;
 }
