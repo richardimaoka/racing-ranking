@@ -1,0 +1,28 @@
+[
+  {
+    "ranking": 1,
+    "name": "S. Austin",
+    "team": "H",
+    "teamIconPath": "/images/H.png",
+    "change": "",
+    "fastest": ""
+  },
+  {
+    "ranking": 2,
+    "name": "A. Fons",
+    "team": "five",
+    "teamIconPath": "/images/five.png",
+    "interval": 2.275,
+    "change": "",
+    "fastest": ""
+  },
+  {
+    "ranking": 3,
+    "name": "S. Rene",
+    "team": "H",
+    "teamIconPath": "/images/H.png",
+    "interval": 7.9,
+    "change": "",
+    "fastest": ""
+  }
+]
