@@ -1,6 +1,10 @@
 import styles from "./page.module.css";
-// import { RankingPanel } from "./RankingPanel";
+import { RankingPanel } from "./RankingPanel";
 
 export default function Page() {
-  return <div className={styles.page}>{/* <RankingPanel /> */}</div>;
+  return (
+    <div className={styles.page}>
+      <RankingPanel />
+    </div>
+  );
 }
