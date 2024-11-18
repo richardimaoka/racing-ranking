@@ -1,0 +1,10 @@
+.page {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+
+  width: 100svw;
+  height: 100svh;
+
+  background-color: rgb(102, 102, 105);
+}

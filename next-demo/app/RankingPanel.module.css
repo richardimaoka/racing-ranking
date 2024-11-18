@@ -1,0 +1,7 @@
+.component {
+  width: 20rem;
+  height: 30rem;
+
+  background-color: rgba(53, 52, 50);
+  /* opacity: 0.8 */
+}
