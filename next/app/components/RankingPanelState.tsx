@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingItemProps } from "./RankingItem";
+import { RankingRetirement } from "./RankingRetirement";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -33,12 +34,12 @@ export function RankingPanelState(props: Props) {
       const updatedItems = await updateItems(count);
       setItems(updatedItems);
       setCount(incrementCount(count));
-    }, 1000);
+    }, 100000);
 
     return () => {
       clearTimeout(timeoutId);
     };
   }, [count, items]);
 
-  return <RankingPanelLayout items={items} />;
+  return <RankingRetirement items={items} />;
 }
