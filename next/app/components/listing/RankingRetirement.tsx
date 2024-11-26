@@ -65,14 +65,24 @@ function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
     .map((i) => ({ name: i.name, done: false, height: 0 }));
 }
 
-type AnimationPhase = "pre" | "shrink" | "insert";
+type InsertItem = {
+  name: string;
+  done: boolean;
+};
+
+function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
+  return items
+    .filter((i) => i.retired)
+    .map((i) => ({ name: i.name, done: false }));
+}
+
+type AnimationPhase = "pre" | "shrink" | "insert" | "done";
 
 function RankingRetirementListing(props: Props) {
   const [items, setItems] = useState(props.currentItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>([]);
-  const isShrinkDone =
-    shrinkItems.length > 0 && shrinkItems.findIndex((i) => !i.done) === -1;
+  const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
 
   useEffect(() => {
     switch (phase) {
@@ -87,6 +97,10 @@ function RankingRetirementListing(props: Props) {
         setPhase("shrink");
         return;
       case "shrink":
+        const isShrinkDone =
+          shrinkItems.length > 0 &&
+          shrinkItems.findIndex((i) => !i.done) === -1;
+
         if (isShrinkDone) {
           const updatedItems = moveRetiredItemsToBottom(
             props.currentItems,
@@ -94,15 +108,26 @@ function RankingRetirementListing(props: Props) {
           );
           setPhase("insert");
           setItems(updatedItems);
+          setInsertItems(extractInsertItems(updatedItems));
         }
         return;
       case "insert":
+        const isInsertDone =
+          insertItems.length > 0 &&
+          insertItems.findIndex((i) => !i.done) === -1;
+
+        if (isInsertDone) {
+          setPhase("done");
+        }
+        return;
+      case "done":
+        // do nothing
         return;
       default:
         const _exhaustiveCheck: never = phase;
         return _exhaustiveCheck;
     }
-  }, [phase, props.currentItems, props.nextItems, isShrinkDone]);
+  }, [phase, props.currentItems, props.nextItems, insertItems, shrinkItems]);
 
   function setShrinkDone(name: string) {
     const index = shrinkItems.findIndex((i) => i.name === name);
@@ -135,6 +160,19 @@ function RankingRetirementListing(props: Props) {
     return item ? item.height : 0;
   }
 
+  function setInsertDone(name: string) {
+    const index = insertItems.findIndex((i) => i.name === name);
+    const updated = [...insertItems];
+
+    if (index < insertItems.length) {
+      updated[index].done = true;
+    } else {
+      // supposedly this shouldn't happen....
+    }
+
+    setInsertItems(updated);
+  }
+
   switch (phase) {
     case "pre":
       return (
@@ -152,7 +190,7 @@ function RankingRetirementListing(props: Props) {
               <ShrinkItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
-                onDoneAnimation={() => setShrinkDone(x.name)}
+                onAnimationDone={() => setShrinkDone(x.name)}
               >
                 <RankingItem key={x.name} {...x} />
               </ShrinkItem>
@@ -167,7 +205,33 @@ function RankingRetirementListing(props: Props) {
         <div className={styles.rankingList}>
           {items.map((x) =>
             x.retired ? (
-              <InsertItem key={x.name} height={getItemHeight(x.name)}>
+              <InsertItem
+                key={x.name}
+                height={getItemHeight(x.name)}
+                onAnimationDone={() => {
+                  setInsertDone(x.name);
+                }}
+              >
+                <RetiredItem key={x.name} {...x} />
+              </InsertItem>
+            ) : (
+              <RankingItem key={x.name} {...x} />
+            )
+          )}
+        </div>
+      );
+    case "done":
+      return (
+        <div className={styles.rankingList}>
+          {items.map((x) =>
+            x.retired ? (
+              <InsertItem
+                key={x.name}
+                height={getItemHeight(x.name)}
+                onAnimationDone={() => {
+                  setInsertDone(x.name);
+                }}
+              >
                 <RetiredItem key={x.name} {...x} />
               </InsertItem>
             ) : (

@@ -4,7 +4,7 @@ import styles from "./ShrinkItem.module.css";
 type Props = {
   children: ReactNode;
   onHeightCalculated?: (height: number) => void;
-  onDoneAnimation?: () => void;
+  onAnimationDone?: () => void;
 };
 
 type AnimationPhase =
@@ -26,7 +26,7 @@ export function ShrinkItem(props: Props) {
   }, []);
 
   const onHeightCalculated = props.onHeightCalculated;
-  const onDoneAnimation = props.onDoneAnimation;
+  const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
     switch (phase) {
@@ -50,8 +50,8 @@ export function ShrinkItem(props: Props) {
         // do nothing - phase change will be done by onTransitionEnd event handler
         return;
       case "callback":
-        if (onDoneAnimation) {
-          onDoneAnimation();
+        if (onAnimationDone) {
+          onAnimationDone();
         }
         setPhase("done");
         return;
@@ -62,7 +62,7 @@ export function ShrinkItem(props: Props) {
         const _exhaustiveCheck: never = phase;
         return _exhaustiveCheck;
     }
-  }, [phase, height, onHeightCalculated, onDoneAnimation]);
+  }, [phase, height, onHeightCalculated, onAnimationDone]);
 
   function onTransitionEnd() {
     setPhase("callback");
