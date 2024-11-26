@@ -1,10 +1,10 @@
 import { RankingItemProps } from "../item/RankingItem";
 
 export function augmentRetirementInfo(
-  currentItems: RankingItemProps[],
+  items: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return currentItems.map((current) => {
+  return items.map((current) => {
     const next = nextItems.find((n) => n.name === current.name);
     return {
       ...current,

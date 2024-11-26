@@ -5,10 +5,7 @@ import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
 import { RetiredItem } from "../item/RetiredItem";
-import {
-  augmentPitInInfo,
-  movePitInItemsToBottom,
-} from "./rankingPitInListing";
+import { fromPrevious, movePitInItemsToBottom } from "./rankingPitInListing";
 import { PitInItem } from "../item/PitInItem";
 
 interface Props {
@@ -43,7 +40,7 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
 type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
 
 function RankingPitInListing(props: Props) {
-  const initItems = augmentPitInInfo(props.currentItems, props.nextItems);
+  const initItems = fromPrevious(props.currentItems, props.nextItems);
 
   const [items, setItems] = useState(initItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
@@ -230,7 +227,7 @@ function RankingPitInListing(props: Props) {
             ) : (
               <RankingItem key={x.name} {...x} />
             )
-        )}
+          )}
         </div>
       );
     default:
