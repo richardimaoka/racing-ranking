@@ -1,0 +1,35 @@
+.component {
+  display: grid;
+  grid-template-columns: 2rem 24px 1fr auto;
+  align-items: center;
+
+  column-gap: 8px;
+
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  /* for transition */
+  position: relative;
+  transition: 0.5s transform;
+
+  color: white;
+}
+
+.ranking {
+  justify-self: end;
+}
+
+.icon {
+  justify-self: end;
+}
+
+.name {
+  justify-self: start;
+}
+
+.interval {
+  justify-self: end;
+  font-weight: 500;
+}

@@ -9,6 +9,7 @@ import {
   augmentPitInInfo,
   movePitInItemsToBottom,
 } from "./rankingPitInListing";
+import { PitInItem } from "../item/PitInItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -196,7 +197,7 @@ function RankingPitInListing(props: Props) {
                   setInsertDone(x.name);
                 }}
               >
-                <RetiredItem key={x.name} {...x} />
+                <PitInItem key={x.name} {...x} />
               </InsertItem>
             ) : (
               <RankingItem key={x.name} {...x} />
@@ -210,6 +211,8 @@ function RankingPitInListing(props: Props) {
           {items.map((x) =>
             x.retired ? (
               <RetiredItem key={x.name} {...x} />
+            ) : x.pitIn ? (
+              <PitInItem key={x.name} {...x} />
             ) : (
               <RankingItem key={x.name} {...x} />
             )
@@ -222,10 +225,12 @@ function RankingPitInListing(props: Props) {
           {items.map((x) =>
             x.retired ? (
               <RetiredItem key={x.name} {...x} />
+            ) : x.pitIn ? (
+              <PitInItem key={x.name} {...x} />
             ) : (
               <RankingItem key={x.name} {...x} />
             )
-          )}
+        )}
         </div>
       );
     default:
