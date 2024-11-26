@@ -9,18 +9,18 @@ interface Props {
   nextItems: RankingItemProps[];
 }
 
-function updateRanking(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  return currentItems.map((current) => {
-    const next = nextItems.find((n) => n.name === current.name);
-    return {
-      ...current,
-      retired: next?.retired,
-    };
-  });
-}
+// function updateRanking(
+//   currentItems: RankingItemProps[],
+//   nextItems: RankingItemProps[]
+// ): RankingItemProps[] {
+//   return currentItems.map((current) => {
+//     const next = nextItems.find((n) => n.name === current.name);
+//     return {
+//       ...current,
+//       retired: next?.retired,
+//     };
+//   });
+// }
 
 function augmentRetirement(
   currentItems: RankingItemProps[],
@@ -37,13 +37,14 @@ function augmentRetirement(
 
 type ShrinkItem = {
   name: string;
+  height: number;
   done: boolean;
 };
 
 function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
   return items
     .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, done: false }));
+    .map((i) => ({ name: i.name, done: false, height: 0 }));
 }
 
 type AnimationPhase = "pre" | "shrink" | "insert";
@@ -70,6 +71,7 @@ export function RankingRetirement(props: Props) {
       case "shrink":
         if (isShrinkDone) {
           setPhase("insert");
+          setItems(props.nextItems);
         }
         return;
       case "insert":
@@ -81,12 +83,24 @@ export function RankingRetirement(props: Props) {
   }, [phase, props.currentItems, props.nextItems, isShrinkDone]);
 
   function setShrinkDone(name: string) {
-    console.log("setshrinkdone called");
     const index = shrinkItems.findIndex((i) => i.name === name);
     const updated = [...shrinkItems];
 
     if (index < shrinkItems.length) {
-      updated[index] = { name: name, done: true };
+      updated[index].done = true;
+    } else {
+      // supposedly this shouldn't happen....
+    }
+
+    setShrinkItems(updated);
+  }
+
+  function setShrinkHeight(name: string, height: number) {
+    const index = shrinkItems.findIndex((i) => i.name === name);
+    const updated = [...shrinkItems];
+
+    if (index < shrinkItems.length) {
+      updated[index].height = height;
     } else {
       // supposedly this shouldn't happen....
     }
@@ -102,6 +116,7 @@ export function RankingRetirement(props: Props) {
           x.retired ? (
             <ShrinkItem
               key={x.name}
+              onHeightCalculated={(height) => setShrinkHeight(x.name, height)}
               onDoneAnimation={() => setShrinkDone(x.name)}
             >
               <RankingItem

@@ -3,6 +3,7 @@ import styles from "./ShrinkItem.module.css";
 
 type Props = {
   children: ReactNode;
+  onHeightCalculated?: (height: number) => void;
   onDoneAnimation?: () => void;
 };
 
@@ -24,26 +25,44 @@ export function ShrinkItem(props: Props) {
     }
   }, []);
 
+  const onHeightCalculated = props.onHeightCalculated;
   const onDoneAnimation = props.onDoneAnimation;
 
   useEffect(() => {
-    if (phase === "pre" && height > 0) {
-      setPhase("ready");
-    } else if (phase === "ready") {
-      // without setTimeout, the height doesn't animate but immediately becomes 0
-      const timeoutId = setTimeout(async () => {
-        setPhase("animating");
-      }, 10);
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    } else if (phase === "callback") {
-      if (onDoneAnimation) {
-        onDoneAnimation();
-      }
-      setPhase("done");
+    switch (phase) {
+      case "pre":
+        if (height > 0) {
+          if (onHeightCalculated) {
+            onHeightCalculated(height);
+          }
+          setPhase("ready");
+        }
+        return;
+      case "ready":
+        // without setTimeout, the height doesn't animate but immediately becomes 0
+        const timeoutId = setTimeout(async () => {
+          setPhase("animating");
+        }, 10);
+        return () => {
+          clearTimeout(timeoutId);
+        };
+      case "animating":
+        // do nothing - phase change will be done by onTransitionEnd event handler
+        return;
+      case "callback":
+        if (onDoneAnimation) {
+          onDoneAnimation();
+        }
+        setPhase("done");
+        return;
+      case "done":
+        // do nothing
+        return;
+      default:
+        const _exhaustiveCheck: never = phase;
+        return _exhaustiveCheck;
     }
-  }, [phase, height, onDoneAnimation]);
+  }, [phase, height, onHeightCalculated, onDoneAnimation]);
 
   function onTransitionEnd() {
     setPhase("callback");
