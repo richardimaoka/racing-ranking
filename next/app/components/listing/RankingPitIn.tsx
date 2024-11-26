@@ -39,7 +39,12 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
 type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
 
 function RankingPitInListing(props: Props) {
-  const [items, setItems] = useState(props.currentItems);
+  const initItems = moveRetiredItemsToBottom(
+    props.currentItems,
+    props.nextItems
+  );
+
+  const [items, setItems] = useState(initItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>([]);
   const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
@@ -49,13 +54,7 @@ function RankingPitInListing(props: Props) {
   useEffect(() => {
     switch (phase) {
       case "pre":
-        const sortedItems = moveRetiredItemsToBottom(
-          props.currentItems,
-          props.nextItems
-        );
-
-        setItems(sortedItems);
-        setShrinkItems(extractShrinkItems(sortedItems));
+        setShrinkItems(extractShrinkItems(initItems));
         setPhase("done");
         return;
       case "shrink":
@@ -101,6 +100,7 @@ function RankingPitInListing(props: Props) {
     onAnimationDone,
     insertItems,
     shrinkItems,
+    initItems,
   ]);
 
   function setShrinkDone(name: string) {
@@ -151,9 +151,13 @@ function RankingPitInListing(props: Props) {
     case "pre":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => (
-            <RankingItem key={x.name} {...x} />
-          ))}
+          {items.map((x) =>
+            x.retired ? (
+              <RetiredItem key={x.name} {...x} />
+            ) : (
+              <RankingItem key={x.name} {...x} />
+            )
+          )}
         </div>
       );
     case "shrink":
@@ -161,6 +165,8 @@ function RankingPitInListing(props: Props) {
         <div className={styles.rankingList}>
           {items.map((x) =>
             x.retired ? (
+              <RetiredItem key={x.name} {...x} />
+            ) : x.pitIn ? (
               <ShrinkItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}

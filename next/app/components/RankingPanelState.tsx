@@ -69,7 +69,7 @@ export function RankingPanelState(props: Props) {
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {
-            // setPhase("pit in");
+            setPhase("pit in");
           }}
         />
       );

@@ -117,22 +117,23 @@
     "fastest": ""
   },
   {
-    "ranking": 14,
-    "name": "A. Edward",
-    "team": "atmark",
-    "teamIconPath": "/images/atmark.png",
-    "interval": 4.763,
-    "change": "",
-    "fastest": ""
-  },
-  {
-    "ranking": 15,
+    "ranking": 16,
     "name": "G. Harry",
     "team": "Z",
     "teamIconPath": "/images/Z.png",
     "interval": 10.072,
     "change": "",
     "fastest": ""
+  },
+  {
+    "ranking": 15,
+    "name": "A. Edward",
+    "team": "atmark",
+    "teamIconPath": "/images/atmark.png",
+    "interval": 4.763,
+    "change": "",
+    "fastest": "",
+    "pitIn": true
   },
   {
     "ranking": 16,

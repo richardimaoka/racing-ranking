@@ -17,14 +17,12 @@ export function moveRetiredItemsToBottom(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  // Supposedly next items have retired items at the bottom
-  return nextItems.map((next) => {
-    const current = currentItems.find((c) => c.name === next.name);
-    // preserve current ranking and inerval
-    return {
-      ...next,
-      ranking: current ? current.ranking : next.ranking,
-      interval: current ? current.interval : next.interval,
-    };
-  });
+  // preserve the current sort order
+  const augmentedItems = augmentRetirementInfo(currentItems, nextItems);
+
+  const retiredItems = augmentedItems.filter((n) => n.retired);
+  const nonRetiredItems = augmentedItems.filter((n) => !n.retired);
+
+  // move retired items to the bottom
+  return nonRetiredItems.concat(retiredItems);
 }

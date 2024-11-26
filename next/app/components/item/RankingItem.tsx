@@ -16,6 +16,7 @@ interface Props {
     onTransitionEnd?: () => void;
   };
   retired?: boolean;
+  pitIn?: boolean;
 }
 
 export type RankingItemProps = Props;
