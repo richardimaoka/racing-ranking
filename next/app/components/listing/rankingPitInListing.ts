@@ -17,7 +17,7 @@ function augmentPitInInfo(
   });
 }
 
-export function fromPrevious(
+export function fromRetirementPhase(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {

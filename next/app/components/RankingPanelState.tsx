@@ -5,6 +5,7 @@ import { RankingItemProps } from "./item/RankingItem";
 import { RankingRetirement } from "./listing/RankingRetirement";
 import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";
+import { RankingUpdateRanking } from "./listing/RankingUpdateRanking";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -25,13 +26,15 @@ async function updateItems(count: number) {
   return nextItems;
 }
 
-type AnimationPhase = "fetch" | "retire" | "pit in";
+type AnimationPhase = "fetch" | "retire" | "pit in" | "rank update";
 
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
   const [phase, setPhase] = useState<AnimationPhase>("fetch");
   const [items] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
+
+  console.log("RankingPanelState", phase, items);
 
   useEffect(() => {
     switch (phase) {
@@ -51,7 +54,10 @@ export function RankingPanelState(props: Props) {
         // do nothing - phase change to "pit in" is done by callback
         break;
       case "pit in":
-        // do nothing
+        // do nothing - phase change to "pit in" is done by callback
+        break;
+      case "rank update":
+        // do nothing - phase change to "pit in" is done by callback
         break;
       default:
         //https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
@@ -74,7 +80,25 @@ export function RankingPanelState(props: Props) {
         />
       );
     case "pit in":
-      return <RankingPitIn currentItems={items} nextItems={nextItems} />;
+      return (
+        <RankingPitIn
+          currentItems={items}
+          nextItems={nextItems}
+          onAnimationDone={() => {
+            setPhase("rank update");
+          }}
+        />
+      );
+    case "rank update":
+      return (
+        <RankingUpdateRanking
+          currentItems={items}
+          nextItems={nextItems}
+          onAnimationDone={() => {
+            // setPhase("rank update");
+          }}
+        />
+      );
     default:
       //https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
       const _exhaustiveCheck: never = phase;

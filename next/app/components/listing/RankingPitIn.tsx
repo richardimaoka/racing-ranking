@@ -5,7 +5,10 @@ import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
 import { RetiredItem } from "../item/RetiredItem";
-import { fromPrevious, movePitInItemsToBottom } from "./rankingPitInListing";
+import {
+  fromRetirementPhase,
+  movePitInItemsToBottom,
+} from "./rankingPitInListing";
 import { PitInItem } from "../item/PitInItem";
 
 interface Props {
@@ -40,7 +43,7 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
 type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
 
 function RankingPitInListing(props: Props) {
-  const initItems = fromPrevious(props.currentItems, props.nextItems);
+  const initItems = fromRetirementPhase(props.currentItems, props.nextItems);
 
   const [items, setItems] = useState(initItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
@@ -50,7 +53,6 @@ function RankingPitInListing(props: Props) {
   const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
-    console.log("RankingPitIn", phase, shrinkItems);
     switch (phase) {
       case "pre":
         setShrinkItems(extractShrinkItems(initItems));
@@ -77,7 +79,7 @@ function RankingPitInListing(props: Props) {
           insertItems.findIndex((i) => !i.done) === -1;
 
         if (isInsertDone) {
-          setPhase("done");
+          setPhase("callback");
         }
         return;
       case "callback":
