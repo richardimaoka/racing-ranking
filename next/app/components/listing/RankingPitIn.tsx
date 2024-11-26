@@ -5,53 +5,12 @@ import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
 import { RetiredItem } from "../item/RetiredItem";
+import { moveRetiredItemsToBottom } from "./rankingRetirementListing";
 
 interface Props {
   currentItems: RankingItemProps[];
   nextItems: RankingItemProps[];
   onAnimationDone?: () => void;
-}
-
-// function updateRanking(
-//   currentItems: RankingItemProps[],
-//   nextItems: RankingItemProps[]
-// ): RankingItemProps[] {
-//   return currentItems.map((current) => {
-//     const next = nextItems.find((n) => n.name === current.name);
-//     return {
-//       ...current,
-//       retired: next?.retired,
-//     };
-//   });
-// }
-
-function augmentRetirementInfo(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  return currentItems.map((current) => {
-    const next = nextItems.find((n) => n.name === current.name);
-    return {
-      ...current,
-      retired: next?.retired,
-    };
-  });
-}
-
-function moveRetiredItemsToBottom(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  // Supposedly next items have retired items at the bottom
-  return nextItems.map((next) => {
-    const current = currentItems.find((c) => c.name === next.name);
-    // preserve current ranking and inerval
-    return {
-      ...next,
-      ranking: current ? current.ranking : next.ranking,
-      interval: current ? current.interval : next.interval,
-    };
-  });
 }
 
 type ShrinkItem = {
@@ -90,14 +49,14 @@ function RankingPitInListing(props: Props) {
   useEffect(() => {
     switch (phase) {
       case "pre":
-        const augmentedItems = augmentRetirementInfo(
+        const sortedItems = moveRetiredItemsToBottom(
           props.currentItems,
           props.nextItems
         );
 
-        setItems(augmentedItems);
-        setShrinkItems(extractShrinkItems(augmentedItems));
-        setPhase("shrink");
+        setItems(sortedItems);
+        setShrinkItems(extractShrinkItems(sortedItems));
+        setPhase("done");
         return;
       case "shrink":
         const isShrinkDone =
