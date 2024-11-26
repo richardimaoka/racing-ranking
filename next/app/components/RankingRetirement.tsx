@@ -3,6 +3,7 @@ import { PanelHeader } from "./PanelHeader";
 import { RankingItem, RankingItemProps } from "./RankingItem";
 import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "./ShrinkItem";
+import { InsertItem } from "./InsertItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -115,7 +116,7 @@ export function RankingRetirement(props: Props) {
     setShrinkItems(updated);
   }
 
-  function setShrinkHeight(name: string, height: number) {
+  function setItemHeight(name: string, height: number) {
     const index = shrinkItems.findIndex((i) => i.name === name);
     const updated = [...shrinkItems];
 
@@ -126,6 +127,11 @@ export function RankingRetirement(props: Props) {
     }
 
     setShrinkItems(updated);
+  }
+
+  function getItemHeight(name: string) {
+    const item = shrinkItems.find((i) => i.name === name);
+    return item ? item.height : 0;
   }
 
   switch (phase) {
@@ -149,9 +155,7 @@ export function RankingRetirement(props: Props) {
               x.retired ? (
                 <ShrinkItem
                   key={x.name}
-                  onHeightCalculated={(height) =>
-                    setShrinkHeight(x.name, height)
-                  }
+                  onHeightCalculated={(height) => setItemHeight(x.name, height)}
                   onDoneAnimation={() => setShrinkDone(x.name)}
                 >
                   <RankingItem key={x.name} {...x} />
@@ -170,15 +174,9 @@ export function RankingRetirement(props: Props) {
           <div className={styles.rankingList}>
             {items.map((x) =>
               x.retired ? (
-                <ShrinkItem
-                  key={x.name}
-                  onHeightCalculated={(height) =>
-                    setShrinkHeight(x.name, height)
-                  }
-                  onDoneAnimation={() => setShrinkDone(x.name)}
-                >
+                <InsertItem key={x.name} height={getItemHeight(x.name)}>
                   <RankingItem key={x.name} {...x} />
-                </ShrinkItem>
+                </InsertItem>
               ) : (
                 <RankingItem key={x.name} {...x} />
               )
