@@ -6,7 +6,7 @@ type Props = {
   children: ReactNode;
 };
 
-type AnimationPhase = "pre" | "animating";
+type AnimationPhase = "pre" | "slide";
 
 export function InsertItem(props: Props) {
   const [phase, setPhase] = useState<AnimationPhase>("pre");
@@ -16,12 +16,12 @@ export function InsertItem(props: Props) {
       case "pre":
         // without setTimeout, the height doesn't animate but immediately becomes 0
         const timeoutId = setTimeout(async () => {
-          setPhase("animating");
+          setPhase("slide");
         }, 10);
         return () => {
           clearTimeout(timeoutId);
         };
-      case "animating":
+      case "slide":
         // do nothing - phase change will be done by onTransitionEnd event handler
         return;
       default:
@@ -34,7 +34,7 @@ export function InsertItem(props: Props) {
     switch (phase) {
       case "pre":
         return { height: 0 };
-      case "animating":
+      case "slide":
         return { height: props.height };
       default:
         const _exhaustiveCheck: never = phase;
@@ -42,8 +42,20 @@ export function InsertItem(props: Props) {
     }
   }
 
+  function calcClassName() {
+    switch (phase) {
+      case "pre":
+        return styles.component + " " + styles.slideInPre;
+      case "slide":
+        return styles.component + " " + styles.slideInPost;
+      default:
+        const _exhaustiveCheck: never = phase;
+        return _exhaustiveCheck;
+    }
+  }
+
   return (
-    <div style={calcStyle()} className={styles.component}>
+    <div style={calcStyle()} className={calcClassName()}>
       {props.children}
     </div>
   );

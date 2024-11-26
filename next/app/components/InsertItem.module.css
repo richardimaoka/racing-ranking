@@ -1,4 +1,13 @@
 .component {
   transition: height 0.5s;
   overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.component.slideInPre > * {
+  transform: translateX(-100%);
+}
+
+.component.slideInPost > * {
+  transform: translateX(0%);
 }
