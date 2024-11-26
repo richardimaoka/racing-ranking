@@ -24,8 +24,9 @@ export function movePitInItemsToBottom(
   const augmentedItems = augmentPitInInfo(currentItems, nextItems);
 
   const pitInItems = augmentedItems.filter((n) => n.pitIn);
-  const nonPitInItems = augmentedItems.filter((n) => !n.pitIn);
+  const retiredItems = augmentedItems.filter((n) => n.retired);
+  const preservedItems = augmentedItems.filter((n) => !n.pitIn && !n.retired);
 
   // move pit-in items to the bottom
-  return nonPitInItems.concat(pitInItems);
+  return preservedItems.concat(pitInItems).concat(retiredItems);
 }

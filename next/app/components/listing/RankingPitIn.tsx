@@ -5,7 +5,6 @@ import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
 import { RetiredItem } from "../item/RetiredItem";
-import { moveRetiredItemsToBottom } from "./rankingRetirementListing";
 import {
   augmentPitInInfo,
   movePitInItemsToBottom,
