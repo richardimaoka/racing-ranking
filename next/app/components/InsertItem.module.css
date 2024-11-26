@@ -1,0 +1,4 @@
+.component {
+  transition: height 0.5s;
+  overflow-y: hidden;
+}

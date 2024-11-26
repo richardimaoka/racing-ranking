@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styles from "./InsertItem.module.css";
 
 type Props = {
@@ -6,6 +6,45 @@ type Props = {
   children: ReactNode;
 };
 
+type AnimationPhase = "pre" | "animating";
+
 export function InsertItem(props: Props) {
-  return <div className={styles.component}>{props.children}</div>;
+  const [phase, setPhase] = useState<AnimationPhase>("pre");
+
+  useEffect(() => {
+    switch (phase) {
+      case "pre":
+        // without setTimeout, the height doesn't animate but immediately becomes 0
+        const timeoutId = setTimeout(async () => {
+          setPhase("animating");
+        }, 10);
+        return () => {
+          clearTimeout(timeoutId);
+        };
+      case "animating":
+        // do nothing - phase change will be done by onTransitionEnd event handler
+        return;
+      default:
+        const _exhaustiveCheck: never = phase;
+        return _exhaustiveCheck;
+    }
+  }, [phase]);
+
+  function calcStyle() {
+    switch (phase) {
+      case "pre":
+        return { height: 0 };
+      case "animating":
+        return { height: props.height };
+      default:
+        const _exhaustiveCheck: never = phase;
+        return _exhaustiveCheck;
+    }
+  }
+
+  return (
+    <div style={calcStyle()} className={styles.component}>
+      {props.children}
+    </div>
+  );
 }
