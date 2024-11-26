@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { RankingItemProps } from "./RankingItem";
 import { RankingRetirement } from "./RankingRetirement";
+import { RankingPanelLayout } from "./RankingPanelLayout";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -25,20 +26,40 @@ async function updateItems(count: number) {
 
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
-  const [items, setItems] = useState(props.initialItems);
+  const [items] = useState(props.initialItems);
+  const [nextItems, setNextItems] = useState([]);
+
+  // useEffect(() => {
+  //   // Fetch the next data
+  //   const timeoutId = setTimeout(async () => {
+  //     const updatedItems = await updateItems(count);
+  //     setItems(updatedItems);
+  //     setCount(incrementCount(count));
+  //   }, 100000);
+
+  //   return () => {
+  //     clearTimeout(timeoutId);
+  //   };
+  // }, [count, items]);
 
   useEffect(() => {
-    // Fetch the next data
-    const timeoutId = setTimeout(async () => {
-      const updatedItems = await updateItems(count);
-      setItems(updatedItems);
-      setCount(incrementCount(count));
-    }, 100000);
+    if (count === 2) {
+      // Fetch the next data
+      const timeoutId = setTimeout(async () => {
+        const updatedItems = await updateItems(count);
+        setNextItems(updatedItems);
+        setCount(incrementCount(count));
+      }, 1000);
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
   }, [count, items]);
 
-  return <RankingRetirement currentItems={items} />;
+  if (nextItems.length === 0) {
+    return <RankingPanelLayout items={items} />;
+  } else {
+    return <RankingRetirement currentItems={items} nextItems={nextItems} />;
+  }
 }

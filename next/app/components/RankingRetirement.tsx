@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PanelHeader } from "./PanelHeader";
 import { RankingItem, RankingItemProps } from "./RankingItem";
 import styles from "./RankingRetirement.module.css";
@@ -9,9 +9,7 @@ interface Props {
   nextItems: RankingItemProps[];
 }
 
-type AnimationPhase = "pre" | "start";
-
-function augmentItems(
+function updateRanking(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
@@ -24,19 +22,88 @@ function augmentItems(
   });
 }
 
+function augmentRetirement(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  return currentItems.map((current) => {
+    const next = nextItems.find((n) => n.name === current.name);
+    return {
+      ...current,
+      retired: next?.retired,
+    };
+  });
+}
+
+type ShrinkItem = {
+  name: string;
+  done: boolean;
+};
+
+function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
+  return items
+    .filter((i) => i.retired)
+    .map((i) => ({ name: i.name, done: false }));
+}
+
+type AnimationPhase = "pre" | "shrink" | "insert";
+
 export function RankingRetirement(props: Props) {
-  const augmentedItems = augmentItems(props.currentItems, props.nextItems);
-  const [items, setItems] = useState(augmentedItems);
+  const [items, setItems] = useState(props.currentItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
-  const ith = 3;
+  const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>([]);
+  const isShrinkDone =
+    shrinkItems.length > 0 && shrinkItems.findIndex((i) => !i.done) === -1;
+
+  useEffect(() => {
+    switch (phase) {
+      case "pre":
+        const augmentedItems = augmentRetirement(
+          props.currentItems,
+          props.nextItems
+        );
+
+        setItems(augmentedItems);
+        setShrinkItems(extractShrinkItems(augmentedItems));
+        setPhase("shrink");
+        return;
+      case "shrink":
+        if (isShrinkDone) {
+          setPhase("insert");
+        }
+        return;
+      case "insert":
+        return;
+      default:
+        const _exhaustiveCheck: never = phase;
+        return _exhaustiveCheck;
+    }
+  }, [phase, props.currentItems, props.nextItems, isShrinkDone]);
+
+  function setShrinkDone(name: string) {
+    console.log("setshrinkdone called");
+    const index = shrinkItems.findIndex((i) => i.name === name);
+    const updated = [...shrinkItems];
+
+    if (index < shrinkItems.length) {
+      updated[index] = { name: name, done: true };
+    } else {
+      // supposedly this shouldn't happen....
+    }
+
+    setShrinkItems(updated);
+  }
 
   return (
     <div className={styles.component}>
       <PanelHeader />
       <div className={styles.rankingList}>
-        {props.currentItems.map((x, i) =>
-          ith === i ? (
-            <ShrinkItem key={x.name}>
+        {items.map((x) =>
+          x.retired ? (
+            <ShrinkItem
+              key={x.name}
+              onDoneAnimation={() => setShrinkDone(x.name)}
+            >
               <RankingItem
                 team={x.team}
                 teamIconPath={x.teamIconPath}
