@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingItemProps } from "./RankingItem";
 import { RankingRetirement } from "./RankingRetirement";
 
@@ -41,5 +40,5 @@ export function RankingPanelState(props: Props) {
     };
   }, [count, items]);
 
-  return <RankingRetirement items={items} />;
+  return <RankingRetirement currentItems={items} />;
 }

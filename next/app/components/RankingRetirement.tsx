@@ -5,12 +5,28 @@ import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "./ShrinkItem";
 
 interface Props {
-  items: RankingItemProps[];
+  currentItems: RankingItemProps[];
+  nextItems: RankingItemProps[];
 }
 
 type AnimationPhase = "pre" | "start";
 
+function augmentItems(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  return currentItems.map((current) => {
+    const next = nextItems.find((n) => n.name === current.name);
+    return {
+      ...current,
+      retired: next?.retired,
+    };
+  });
+}
+
 export function RankingRetirement(props: Props) {
+  const augmentedItems = augmentItems(props.currentItems, props.nextItems);
+  const [items, setItems] = useState(augmentedItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
   const ith = 3;
 
@@ -18,7 +34,7 @@ export function RankingRetirement(props: Props) {
     <div className={styles.component}>
       <PanelHeader />
       <div className={styles.rankingList}>
-        {props.items.map((x, i) =>
+        {props.currentItems.map((x, i) =>
           ith === i ? (
             <ShrinkItem key={x.name}>
               <RankingItem
