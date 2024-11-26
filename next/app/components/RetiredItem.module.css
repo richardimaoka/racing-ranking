@@ -13,25 +13,23 @@
   /* for transition */
   position: relative;
   transition: 0.5s transform;
+
+  color: rgb(156, 156, 156);
 }
 
 .ranking {
   justify-self: end;
-  color: white;
 }
 
 .icon {
   justify-self: end;
-  color: white;
 }
 
 .name {
   justify-self: start;
-  color: white;
 }
 
 .interval {
   justify-self: end;
-  color: white;
   font-weight: 500;
 }

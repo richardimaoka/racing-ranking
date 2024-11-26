@@ -4,6 +4,7 @@ import { RankingItem, RankingItemProps } from "./RankingItem";
 import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "./ShrinkItem";
 import { InsertItem } from "./InsertItem";
+import { RetiredItem } from "./RetiredItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -167,7 +168,7 @@ function RankingRetirementListing(props: Props) {
           {items.map((x) =>
             x.retired ? (
               <InsertItem key={x.name} height={getItemHeight(x.name)}>
-                <RankingItem key={x.name} {...x} />
+                <RetiredItem key={x.name} {...x} />
               </InsertItem>
             ) : (
               <RankingItem key={x.name} {...x} />
