@@ -22,7 +22,7 @@ interface Props {
 //   });
 // }
 
-function augmentRetirement(
+function augmentRetirementInfo(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
@@ -31,6 +31,22 @@ function augmentRetirement(
     return {
       ...current,
       retired: next?.retired,
+    };
+  });
+}
+
+function moveRetiredItemsToBottom(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  // Supposedly next items have retired items at the bottom
+  return nextItems.map((next) => {
+    const current = currentItems.find((c) => c.name === next.name);
+    // preserve current ranking and inerval
+    return {
+      ...next,
+      ranking: current ? current.ranking : next.ranking,
+      interval: current ? current.interval : next.interval,
     };
   });
 }
@@ -59,7 +75,7 @@ export function RankingRetirement(props: Props) {
   useEffect(() => {
     switch (phase) {
       case "pre":
-        const augmentedItems = augmentRetirement(
+        const augmentedItems = augmentRetirementInfo(
           props.currentItems,
           props.nextItems
         );
@@ -70,8 +86,12 @@ export function RankingRetirement(props: Props) {
         return;
       case "shrink":
         if (isShrinkDone) {
+          const updatedItems = moveRetiredItemsToBottom(
+            props.currentItems,
+            props.nextItems
+          );
           setPhase("insert");
-          setItems(props.nextItems);
+          setItems(updatedItems);
         }
         return;
       case "insert":
