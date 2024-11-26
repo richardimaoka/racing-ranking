@@ -63,7 +63,6 @@ function RankingRetirementListing(props: Props) {
   const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
-    console.log("RankingRetirement", phase, insertItems);
     switch (phase) {
       case "pre":
         const augmentedItems = augmentRetirementInfo(

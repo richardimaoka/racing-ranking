@@ -6,6 +6,10 @@ import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
 import { RetiredItem } from "../item/RetiredItem";
 import { moveRetiredItemsToBottom } from "./rankingRetirementListing";
+import {
+  augmentPitInInfo,
+  movePitInItemsToBottom,
+} from "./rankingPitInListing";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -21,7 +25,7 @@ type ShrinkItem = {
 
 function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
   return items
-    .filter((i) => i.retired)
+    .filter((i) => i.pitIn)
     .map((i) => ({ name: i.name, done: false, height: 0 }));
 }
 
@@ -32,17 +36,14 @@ type InsertItem = {
 
 function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
   return items
-    .filter((i) => i.retired)
+    .filter((i) => i.pitIn)
     .map((i) => ({ name: i.name, done: false }));
 }
 
 type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
 
 function RankingPitInListing(props: Props) {
-  const initItems = moveRetiredItemsToBottom(
-    props.currentItems,
-    props.nextItems
-  );
+  const initItems = augmentPitInInfo(props.currentItems, props.nextItems);
 
   const [items, setItems] = useState(initItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
@@ -52,10 +53,11 @@ function RankingPitInListing(props: Props) {
   const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
+    console.log("RankingPitIn", phase, shrinkItems);
     switch (phase) {
       case "pre":
         setShrinkItems(extractShrinkItems(initItems));
-        setPhase("done");
+        setPhase("shrink");
         return;
       case "shrink":
         const isShrinkDone =
@@ -63,7 +65,7 @@ function RankingPitInListing(props: Props) {
           shrinkItems.findIndex((i) => !i.done) === -1;
 
         if (isShrinkDone) {
-          const updatedItems = moveRetiredItemsToBottom(
+          const updatedItems = movePitInItemsToBottom(
             props.currentItems,
             props.nextItems
           );
@@ -139,6 +141,7 @@ function RankingPitInListing(props: Props) {
     const updated = [...insertItems];
 
     if (index < insertItems.length) {
+      console.log("RankingPitIn setInsertDone", index, name, insertItems);
       updated[index].done = true;
     } else {
       // supposedly this shouldn't happen....
@@ -185,6 +188,8 @@ function RankingPitInListing(props: Props) {
         <div className={styles.rankingList}>
           {items.map((x) =>
             x.retired ? (
+              <RetiredItem key={x.name} {...x} />
+            ) : x.pitIn ? (
               <InsertItem
                 key={x.name}
                 height={getItemHeight(x.name)}
