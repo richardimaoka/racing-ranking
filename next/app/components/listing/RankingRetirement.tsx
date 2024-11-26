@@ -9,6 +9,7 @@ import { RetiredItem } from "../item/RetiredItem";
 interface Props {
   currentItems: RankingItemProps[];
   nextItems: RankingItemProps[];
+  onAnimationDone?: () => void;
 }
 
 // function updateRanking(
@@ -76,13 +77,15 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
     .map((i) => ({ name: i.name, done: false }));
 }
 
-type AnimationPhase = "pre" | "shrink" | "insert" | "done";
+type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
 
 function RankingRetirementListing(props: Props) {
   const [items, setItems] = useState(props.currentItems);
   const [phase, setPhase] = useState<AnimationPhase>("pre");
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>([]);
   const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
+
+  const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
     switch (phase) {
@@ -120,6 +123,11 @@ function RankingRetirementListing(props: Props) {
           setPhase("done");
         }
         return;
+      case "callback":
+        if (onAnimationDone) {
+          onAnimationDone();
+        }
+        return;
       case "done":
         // do nothing
         return;
@@ -127,7 +135,14 @@ function RankingRetirementListing(props: Props) {
         const _exhaustiveCheck: never = phase;
         return _exhaustiveCheck;
     }
-  }, [phase, props.currentItems, props.nextItems, insertItems, shrinkItems]);
+  }, [
+    phase,
+    props.currentItems,
+    props.nextItems,
+    onAnimationDone,
+    insertItems,
+    shrinkItems,
+  ]);
 
   function setShrinkDone(name: string) {
     const index = shrinkItems.findIndex((i) => i.name === name);
@@ -220,20 +235,24 @@ function RankingRetirementListing(props: Props) {
           )}
         </div>
       );
+    case "callback":
+      return (
+        <div className={styles.rankingList}>
+          {items.map((x) =>
+            x.retired ? (
+              <RetiredItem key={x.name} {...x} />
+            ) : (
+              <RankingItem key={x.name} {...x} />
+            )
+          )}
+        </div>
+      );
     case "done":
       return (
         <div className={styles.rankingList}>
           {items.map((x) =>
             x.retired ? (
-              <InsertItem
-                key={x.name}
-                height={getItemHeight(x.name)}
-                onAnimationDone={() => {
-                  setInsertDone(x.name);
-                }}
-              >
-                <RetiredItem key={x.name} {...x} />
-              </InsertItem>
+              <RetiredItem key={x.name} {...x} />
             ) : (
               <RankingItem key={x.name} {...x} />
             )
