@@ -108,39 +108,66 @@ export function RankingRetirement(props: Props) {
     setShrinkItems(updated);
   }
 
-  return (
-    <div className={styles.component}>
-      <PanelHeader />
-      <div className={styles.rankingList}>
-        {items.map((x) =>
-          x.retired ? (
-            <ShrinkItem
-              key={x.name}
-              onHeightCalculated={(height) => setShrinkHeight(x.name, height)}
-              onDoneAnimation={() => setShrinkDone(x.name)}
-            >
-              <RankingItem
-                team={x.team}
-                teamIconPath={x.teamIconPath}
-                name={x.name}
-                ranking={x.ranking}
-                interval={x.interval}
-                next={x.next}
-              />
-            </ShrinkItem>
-          ) : (
-            <RankingItem
-              key={x.name}
-              team={x.team}
-              teamIconPath={x.teamIconPath}
-              name={x.name}
-              ranking={x.ranking}
-              interval={x.interval}
-              next={x.next}
-            />
-          )
-        )}
-      </div>
-    </div>
-  );
+  switch (phase) {
+    case "pre":
+      return (
+        <div className={styles.component}>
+          <PanelHeader />
+          <div className={styles.rankingList}>
+            {items.map((x) => (
+              <RankingItem key={x.name} {...x} />
+            ))}
+          </div>
+        </div>
+      );
+    case "shrink":
+      return (
+        <div className={styles.component}>
+          <PanelHeader />
+          <div className={styles.rankingList}>
+            {items.map((x) =>
+              x.retired ? (
+                <ShrinkItem
+                  key={x.name}
+                  onHeightCalculated={(height) =>
+                    setShrinkHeight(x.name, height)
+                  }
+                  onDoneAnimation={() => setShrinkDone(x.name)}
+                >
+                  <RankingItem key={x.name} {...x} />
+                </ShrinkItem>
+              ) : (
+                <RankingItem key={x.name} {...x} />
+              )
+            )}
+          </div>
+        </div>
+      );
+    case "insert":
+      return (
+        <div className={styles.component}>
+          <PanelHeader />
+          <div className={styles.rankingList}>
+            {items.map((x) =>
+              x.retired ? (
+                <ShrinkItem
+                  key={x.name}
+                  onHeightCalculated={(height) =>
+                    setShrinkHeight(x.name, height)
+                  }
+                  onDoneAnimation={() => setShrinkDone(x.name)}
+                >
+                  <RankingItem key={x.name} {...x} />
+                </ShrinkItem>
+              ) : (
+                <RankingItem key={x.name} {...x} />
+              )
+            )}
+          </div>
+        </div>
+      );
+    default:
+      const _exhaustiveCheck: never = phase;
+      return _exhaustiveCheck;
+  }
 }
