@@ -74,8 +74,16 @@ export function InsertItem(props: Props) {
     }
   }
 
+  function onTransitionEnd() {
+    setPhase("callback");
+  }
+
   return (
-    <div style={calcStyle()} className={calcClassName()}>
+    <div
+      style={calcStyle()}
+      className={calcClassName()}
+      onTransitionEnd={onTransitionEnd}
+    >
       {props.children}
     </div>
   );

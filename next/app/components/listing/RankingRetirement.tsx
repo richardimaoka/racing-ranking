@@ -63,6 +63,7 @@ function RankingRetirementListing(props: Props) {
   const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
+    console.log("RankingRetirement", phase, insertItems);
     switch (phase) {
       case "pre":
         const augmentedItems = augmentRetirementInfo(
@@ -95,7 +96,7 @@ function RankingRetirementListing(props: Props) {
           insertItems.findIndex((i) => !i.done) === -1;
 
         if (isInsertDone) {
-          setPhase("done");
+          setPhase("callback");
         }
         return;
       case "callback":

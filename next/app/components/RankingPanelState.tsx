@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { RankingItemProps } from "./item/RankingItem";
 import { RankingRetirement } from "./listing/RankingRetirement";
 import { RankingPanelLayout } from "./RankingPanelLayout";
+import { RankingPitIn } from "./listing/RankingPitIn";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -24,7 +25,7 @@ async function updateItems(count: number) {
   return nextItems;
 }
 
-type AnimationPhase = "fetch" | "retire"; //| "pit in";
+type AnimationPhase = "fetch" | "retire" | "pit in";
 
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
@@ -32,37 +33,25 @@ export function RankingPanelState(props: Props) {
   const [items] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
-  // useEffect(() => {
-  //   // Fetch the next data
-  //   const timeoutId = setTimeout(async () => {
-  //     const updatedItems = await updateItems(count);
-  //     setItems(updatedItems);
-  //     setCount(incrementCount(count));
-  //   }, 100000);
-
-  //   return () => {
-  //     clearTimeout(timeoutId);
-  //   };
-  // }, [count, items]);
-
   useEffect(() => {
     switch (phase) {
       case "fetch":
-        if (count === 2) {
-          // Fetch the next data
-          const timeoutId = setTimeout(async () => {
-            const updatedItems = await updateItems(count);
-            setNextItems(updatedItems);
-            setCount(incrementCount(count));
-            setPhase("retire");
-          }, 1000);
+        // Fetch the next data
+        const timeoutId = setTimeout(async () => {
+          const updatedItems = await updateItems(count);
+          setNextItems(updatedItems);
+          setCount(incrementCount(count));
+          setPhase("retire");
+        }, 1000);
 
-          return () => {
-            clearTimeout(timeoutId);
-          };
-        }
-        break;
+        return () => {
+          clearTimeout(timeoutId);
+        };
       case "retire":
+        // do nothing - phase change to "pit in" is done by callback
+        break;
+      case "pit in":
+        // do nothing
         break;
       default:
         //https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
@@ -75,7 +64,17 @@ export function RankingPanelState(props: Props) {
     case "fetch":
       return <RankingPanelLayout items={items} />;
     case "retire":
-      return <RankingRetirement currentItems={items} nextItems={nextItems} />;
+      return (
+        <RankingRetirement
+          currentItems={items}
+          nextItems={nextItems}
+          onAnimationDone={() => {
+            // setPhase("pit in");
+          }}
+        />
+      );
+    case "pit in":
+      return <RankingPitIn currentItems={items} nextItems={nextItems} />;
     default:
       //https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
       const _exhaustiveCheck: never = phase;
