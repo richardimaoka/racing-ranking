@@ -1,5 +1,5 @@
 import { PanelHeader } from "./PanelHeader";
-import { RankingItem, RankingItemProps } from "./RankingItem";
+import { RankingItem, RankingItemProps } from "./item/RankingItem";
 import styles from "./RankingPanelLayout.module.css";
 
 interface Props {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { PanelHeader } from "./PanelHeader";
-import { RankingItem, RankingItemProps } from "./RankingItem";
+import { PanelHeader } from "../PanelHeader";
+import { RankingItem, RankingItemProps } from "../item/RankingItem";
 import styles from "./RankingRetirement.module.css";
-import { ShrinkItem } from "./ShrinkItem";
-import { InsertItem } from "./InsertItem";
-import { RetiredItem } from "./RetiredItem";
+import { ShrinkItem } from "../animation/ShrinkItem";
+import { InsertItem } from "../animation/InsertItem";
+import { RetiredItem } from "../item/RetiredItem";
 
 interface Props {
   currentItems: RankingItemProps[];

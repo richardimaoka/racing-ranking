@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { RankingPanelLayout } from "./RankingPanelLayout";
-import { RankingItemProps } from "./RankingItem";
+import { RankingItemProps } from "./item/RankingItem";
 
 interface Props {
   initialItems: RankingItemProps[];
