@@ -16,19 +16,6 @@ interface Props {
   onAnimationDone?: () => void;
 }
 
-// function updateRanking(
-//   currentItems: RankingItemProps[],
-//   nextItems: RankingItemProps[]
-// ): RankingItemProps[] {
-//   return currentItems.map((current) => {
-//     const next = nextItems.find((n) => n.name === current.name);
-//     return {
-//       ...current,
-//       retired: next?.retired,
-//     };
-//   });
-// }
-
 type ShrinkItem = {
   name: string;
   height: number;

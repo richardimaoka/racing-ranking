@@ -23,8 +23,6 @@ function RankingUpdateRankingListing(props: Props) {
 
   const onAnimationDone = props.onAnimationDone;
 
-  console.log("RankingUpdateRankingListing ", phase, items);
-
   useEffect(() => {
     switch (phase) {
       case "pre":

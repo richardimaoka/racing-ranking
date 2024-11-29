@@ -26,7 +26,7 @@ async function updateItems(count: number) {
   return nextItems;
 }
 
-type AnimationPhase = "fetch" | "retire" | "pit in" | "rank update";
+type AnimationPhase = "fetch" | "retire" | "pit in" | "rank update" | "shuffle";
 
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
@@ -34,7 +34,7 @@ export function RankingPanelState(props: Props) {
   const [items] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
-  console.log("RankingPanelState", phase, items);
+  // console.log("RankingPanelState", phase, items);
 
   useEffect(() => {
     switch (phase) {
@@ -57,6 +57,9 @@ export function RankingPanelState(props: Props) {
         // do nothing - phase change to "pit in" is done by callback
         break;
       case "rank update":
+        // do nothing - phase change to "pit in" is done by callback
+        break;
+      case "shuffle":
         // do nothing - phase change to "pit in" is done by callback
         break;
       default:
@@ -90,6 +93,16 @@ export function RankingPanelState(props: Props) {
         />
       );
     case "rank update":
+      return (
+        <RankingUpdateRanking
+          currentItems={items}
+          nextItems={nextItems}
+          onAnimationDone={() => {
+            setPhase("shuffle");
+          }}
+        />
+      );
+    case "shuffle":
       return (
         <RankingUpdateRanking
           currentItems={items}

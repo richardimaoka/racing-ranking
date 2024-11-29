@@ -12,7 +12,7 @@ interface Props {
   next?: {
     ranking: number;
     interval?: number;
-    animationEnd: boolean;
+    animationEnd?: boolean;
     onTransitionEnd?: () => void;
   };
   retired?: boolean;
