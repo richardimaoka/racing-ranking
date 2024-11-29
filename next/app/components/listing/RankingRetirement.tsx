@@ -21,13 +21,13 @@ interface Props {
 type ShrinkItem = {
   name: string;
   height: number;
-  done: boolean;
+  doneShrink: boolean;
 };
 
 function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
   return items
     .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, done: false, height: 0 }));
+    .map((i) => ({ name: i.name, doneShrink: false, height: 0 }));
 }
 
 type InsertItem = {
@@ -44,26 +44,17 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
 type AnimationPhase = "shrink" | "insert" | "done";
 
 function RankingRetirementListing(props: Props) {
-  const augmentedItems = augmentRetirementInfo(
-    props.currentItems,
-    props.nextItems
-  );
-  const sortedItems = moveRetiredItemsToBottom(
-    props.currentItems,
-    props.nextItems
-  );
-  const initShrinkItems = extractShrinkItems(augmentedItems);
-  const initInsertItems = extractInsertItems(sortedItems);
+  const initShrinkItems = extractShrinkItems(props.nextItems);
+  const initInsertItems = extractInsertItems(props.nextItems);
 
   const [phase, setPhase] = useState<AnimationPhase>("shrink");
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>(initShrinkItems);
   const [insertItems, setInsertItems] = useState<InsertItem[]>(initInsertItems);
 
-  const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);
-  const [prevdNextItems, setNextItems] = useState(props.nextItems);
-
   // Upon props change, reset the state, otherwise React states are preserved through props change.
   // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);
+  const [prevdNextItems, setNextItems] = useState(props.nextItems);
   if (
     prevCurrentItems !== props.currentItems ||
     prevdNextItems !== props.nextItems
@@ -72,25 +63,6 @@ function RankingRetirementListing(props: Props) {
     setNextItems(props.nextItems);
     setShrinkItems(initShrinkItems);
     setInsertItems(initInsertItems);
-  }
-
-  switch (phase) {
-    case "shrink":
-      break;
-    case "insert":
-      const isInsertDone =
-        insertItems.length > 0 && insertItems.findIndex((i) => !i.done) === -1;
-
-      if (isInsertDone) {
-        setPhase("done");
-      }
-      break;
-    case "done":
-      // do nothing
-      break;
-    default:
-      const _exhaustiveCheck: never = phase;
-      return _exhaustiveCheck;
   }
 
   function setShrinkDone(name: string) {
@@ -103,11 +75,12 @@ function RankingRetirementListing(props: Props) {
         `name = ${name} not found in ${itemNames}. index = ${index} out of range`
       );
     }
+
     // set insert status as `done`
-    updated[index].done = true;
+    updated[index].doneShrink = true;
     setShrinkItems(updated);
 
-    const doneItems = updated.filter((i) => i.done);
+    const doneItems = updated.filter((i) => i.doneShrink);
     const shrinkItems2 = updated;
     // if everything is done
     if (doneItems.length === shrinkItems2.length) {
@@ -152,6 +125,8 @@ function RankingRetirementListing(props: Props) {
     const insertItems2 = updated;
     // if everything is done
     if (doneItems.length === insertItems2.length) {
+      setPhase("done");
+
       if (props.onAnimationDone) {
         props.onAnimationDone();
       }
@@ -160,6 +135,11 @@ function RankingRetirementListing(props: Props) {
 
   switch (phase) {
     case "shrink":
+      const augmentedItems = augmentRetirementInfo(
+        props.currentItems,
+        props.nextItems
+      );
+
       return (
         <div className={styles.rankingList}>
           {augmentedItems.map((x) =>
@@ -177,7 +157,11 @@ function RankingRetirementListing(props: Props) {
           )}
         </div>
       );
-    case "insert":
+    case "insert": {
+      const sortedItems = moveRetiredItemsToBottom(
+        props.currentItems,
+        props.nextItems
+      );
       return (
         <div className={styles.rankingList}>
           {sortedItems.map((x) =>
@@ -197,7 +181,12 @@ function RankingRetirementListing(props: Props) {
           )}
         </div>
       );
-    case "done":
+    }
+    case "done": {
+      const sortedItems = moveRetiredItemsToBottom(
+        props.currentItems,
+        props.nextItems
+      );
       return (
         <div className={styles.rankingList}>
           {sortedItems.map((x) => (
@@ -205,6 +194,7 @@ function RankingRetirementListing(props: Props) {
           ))}
         </div>
       );
+    }
     default:
       const _exhaustiveCheck: never = phase;
       return _exhaustiveCheck;
