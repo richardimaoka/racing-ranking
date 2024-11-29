@@ -7,32 +7,31 @@
     "change": "",
     "fastest": ""
   },
-
   {
     "ranking": 2,
-    "name": "A. Fons",
-    "team": "five",
-    "teamIconPath": "/images/five.png",
-    "interval": 2.345,
-    "change": "",
-    "fastest": ""
-  },
-  {
-    "ranking": 3,
     "name": "S. Rene",
     "team": "H",
     "teamIconPath": "/images/H.png",
-    "interval": 7.999,
+    "interval": 7.9,
     "change": "",
     "fastest": ""
   },
 
+  {
+    "ranking": 3,
+    "name": "M. Kristian",
+    "team": "P",
+    "teamIconPath": "/images/P.png",
+    "interval": 3.049,
+    "change": "",
+    "fastest": ""
+  },
   {
     "ranking": 4,
     "name": "K. Maik",
     "team": "five",
     "teamIconPath": "/images/five.png",
-    "interval": 0.15,
+    "interval": 0.156,
     "change": "",
     "fastest": ""
   },
@@ -41,88 +40,88 @@
     "name": "G. Freddie",
     "team": "D",
     "teamIconPath": "/images/D.png",
-    "interval": 8.557,
+    "interval": 8.652,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 6,
-    "name": "M. Kristian",
-    "team": "P",
-    "teamIconPath": "/images/P.png",
-    "interval": 3.146,
+    "name": "R. Mateus",
+    "team": "t",
+    "teamIconPath": "/images/t.png",
+    "interval": 9.716,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 7,
-    "name": "R. Mateus",
+    "name": "R. Miguel",
     "team": "t",
     "teamIconPath": "/images/t.png",
-    "interval": 9.655,
+    "interval": 13.473,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 8,
-    "name": "R. Miguel",
-    "team": "t",
-    "teamIconPath": "/images/t.png",
-    "interval": 13.452,
+    "name": "S. Wiktor",
+    "team": "D",
+    "teamIconPath": "/images/D.png",
+    "interval": 0.949,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 9,
-    "name": "S. Wiktor",
-    "team": "D",
-    "teamIconPath": "/images/D.png",
-    "interval": 0.879,
+    "name": "O. Odín",
+    "team": "P",
+    "teamIconPath": "/images/P.png",
+    "interval": 9.594,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 10,
-    "name": "O. Odín",
-    "team": "P",
-    "teamIconPath": "/images/P.png",
-    "interval": 9.657,
+    "name": "F. Tain",
+    "team": "Q",
+    "teamIconPath": "/images/Q.png",
+    "interval": 14.592,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 11,
-    "name": "F. Tain",
-    "team": "Q",
-    "teamIconPath": "/images/Q.png",
-    "interval": 14.548,
+    "name": "F. Wang",
+    "team": "atmark",
+    "teamIconPath": "/images/atmark.png",
+    "interval": 5.472,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 12,
-    "name": "F. Wang",
-    "team": "atmark",
-    "teamIconPath": "/images/atmark.png",
-    "interval": 5.568,
+    "name": "K. David",
+    "team": "Z",
+    "teamIconPath": "/images/Z.png",
+    "interval": 3.212,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 13,
-    "name": "K. David",
-    "team": "Z",
-    "teamIconPath": "/images/Z.png",
-    "interval": 3.241,
+    "name": "W. Robert",
+    "team": "Q",
+    "teamIconPath": "/images/Q.png",
+    "interval": 3.131,
     "change": "",
     "fastest": ""
   },
   {
     "ranking": 14,
-    "name": "W. Robert",
-    "team": "Q",
-    "teamIconPath": "/images/Q.png",
-    "interval": 3.135,
+    "name": "G. Harry",
+    "team": "Z",
+    "teamIconPath": "/images/Z.png",
+    "interval": 10.072,
     "change": "",
     "fastest": ""
   },
@@ -131,17 +130,19 @@
     "name": "A. Edward",
     "team": "atmark",
     "teamIconPath": "/images/atmark.png",
-    "interval": 4.689,
+    "interval": 4.763,
     "change": "",
-    "fastest": ""
+    "fastest": "",
+    "pitIn": true
   },
   {
     "ranking": 16,
-    "name": "G. Harry",
-    "team": "Z",
-    "teamIconPath": "/images/Z.png",
-    "interval": 10.015,
+    "name": "A. Fons",
+    "team": "five",
+    "teamIconPath": "/images/five.png",
+    "interval": 2.275,
     "change": "",
-    "fastest": ""
+    "fastest": "",
+    "retired": true
   }
 ]

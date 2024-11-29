@@ -7,7 +7,7 @@ interface Props {
   teamIconPath: string;
   ranking: number;
   name: string;
-  interval: number;
+  interval?: number;
 }
 
 const intervalFormatter = new Intl.NumberFormat("en", {

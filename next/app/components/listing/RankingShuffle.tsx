@@ -4,6 +4,7 @@ import { PanelHeader } from "../PanelHeader";
 import styles from "./RankingShuffle.module.css";
 import { ShuffleItem } from "../animation/ShuffleItem";
 import { afterShuffle, augmentShuffleInfo } from "./rankingShuffle";
+import { RankingItemStatic } from "../item/RankingItemStatic";
 
 type Props = {
   currentItems: RankingItemProps[];
@@ -45,14 +46,14 @@ function RankingShuffleListing(props: Props) {
           shuffleItems.length > 0 &&
           shuffleItems.findIndex((i) => !i.done) === -1;
 
-        // if (isShuffleDone) {
-        //   const updatedItems = afterShuffle(
-        //     props.currentItems,
-        //     props.nextItems
-        //   );
-        //    setPhase("done callback");
-        //    setItems(updatedItems);
-        // }
+        if (isShuffleDone) {
+          const updatedItems = afterShuffle(
+            props.currentItems,
+            props.nextItems
+          );
+          setPhase("done callback");
+          setItems(updatedItems);
+        }
         return;
       case "done callback":
         if (onAnimationDone) {
@@ -109,7 +110,7 @@ function RankingShuffleListing(props: Props) {
                 <RankingItem key={x.name} {...x} />
               </ShuffleItem>
             ) : (
-              <RankingItem key={x.name} {...x} />
+              <RankingItemStatic key={x.name} {...x} />
             );
           })}
         </div>
@@ -118,7 +119,7 @@ function RankingShuffleListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {items.map((x) => {
-            return <RankingItem key={x.name} {...x} />;
+            return <RankingItemStatic key={x.name} {...x} />;
           })}
         </div>
       );
@@ -126,7 +127,7 @@ function RankingShuffleListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {items.map((x) => {
-            return <RankingItem key={x.name} {...x} />;
+            return <RankingItemStatic key={x.name} {...x} />;
           })}
         </div>
       );

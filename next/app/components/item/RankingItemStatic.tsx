@@ -1,24 +1,9 @@
 import { PitInItem } from "./PitInItem";
+import { RankingItemProps } from "./RankingItem";
 import { RankingItemNormal } from "./RankingItemNormal";
 import { RetiredItem } from "./RetiredItem";
 
-interface Props {
-  team: string;
-  teamIconPath: string;
-  ranking: number;
-  name: string;
-  interval?: number;
-  next?: {
-    ranking: number;
-    interval?: number;
-    animationEnd?: boolean;
-    onTransitionEnd?: () => void;
-  };
-  retired?: boolean;
-  pitIn?: boolean;
-}
-
-export type RankingStaticProps = Props;
+type Props = RankingItemProps;
 
 export function RankingItemStatic(props: Props): JSX.Element {
   if (props.retired) {
@@ -40,11 +25,11 @@ export function RankingItemStatic(props: Props): JSX.Element {
   } else {
     return (
       <RankingItemNormal
-        team={""}
-        teamIconPath={""}
-        ranking={0}
-        name={""}
-        interval={0}
+        team={props.team}
+        teamIconPath={props.teamIconPath}
+        ranking={props.ranking}
+        name={props.name}
+        interval={props.interval}
       />
     );
   }

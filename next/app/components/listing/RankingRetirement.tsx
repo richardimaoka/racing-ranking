@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { PanelHeader } from "../PanelHeader";
-import { RankingItem, RankingItemProps } from "../item/RankingItem";
-import styles from "./RankingRetirement.module.css";
-import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
+import { ShrinkItem } from "../animation/ShrinkItem";
+import { RankingItemNormal } from "../item/RankingItemNormal";
+import { RankingItemStatic } from "../item/RankingItemStatic";
 import { RetiredItem } from "../item/RetiredItem";
+import { PanelHeader } from "../PanelHeader";
+import styles from "./RankingRetirement.module.css";
 import {
   augmentRetirementInfo,
   moveRetiredItemsToBottom,
@@ -155,7 +156,7 @@ function RankingRetirementListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {items.map((x) => (
-            <RankingItem key={x.name} {...x} />
+            <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
       );
@@ -169,10 +170,10 @@ function RankingRetirementListing(props: Props) {
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setShrinkDone(x.name)}
               >
-                <RankingItem key={x.name} {...x} />
+                <RankingItemNormal {...x} />
               </ShrinkItem>
             ) : (
-              <RankingItem key={x.name} {...x} />
+              <RankingItemStatic key={x.name} {...x} />
             )
           )}
         </div>
@@ -192,7 +193,7 @@ function RankingRetirementListing(props: Props) {
                 <RetiredItem key={x.name} {...x} />
               </InsertItem>
             ) : (
-              <RankingItem key={x.name} {...x} />
+              <RankingItemStatic key={x.name} {...x} />
             )
           )}
         </div>
@@ -200,25 +201,17 @@ function RankingRetirementListing(props: Props) {
     case "callback":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     case "done":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     default:
