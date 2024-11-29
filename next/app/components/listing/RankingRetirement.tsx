@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
-import { ShrinkItem } from "../animation/ShrinkItem";
+import { ShrinkItem as RemoveItem } from "../animation/ShrinkItem";
 import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
@@ -18,27 +18,27 @@ interface Props {
   onAnimationDone?: () => void;
 }
 
-type ShrinkItem = {
+type RemoveItem = {
   name: string;
   height: number;
-  done: boolean;
+  doneRemove: boolean;
 };
 
-function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
+function extractShrinkItems(items: RankingItemProps[]): RemoveItem[] {
   return items
     .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, done: false, height: 0 }));
+    .map((i) => ({ name: i.name, doneRemove: false, height: 0 }));
 }
 
 type InsertItem = {
   name: string;
-  done: boolean;
+  doneInsert: boolean;
 };
 
 function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
   return items
     .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, done: false }));
+    .map((i) => ({ name: i.name, doneInsert: false }));
 }
 
 type AnimationPhase = "shrink" | "insert" | "done";
@@ -48,7 +48,7 @@ function RankingRetirementListing(props: Props) {
   const initInsertItems = extractInsertItems(props.nextItems);
 
   const [phase, setPhase] = useState<AnimationPhase>("shrink");
-  const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>(initShrinkItems);
+  const [shrinkItems, setShrinkItems] = useState<RemoveItem[]>(initShrinkItems);
   const [insertItems, setInsertItems] = useState<InsertItem[]>(initInsertItems);
 
   // Upon props change, reset the state, otherwise React states are preserved through props change.
@@ -77,11 +77,11 @@ function RankingRetirementListing(props: Props) {
 
     // set insert status as `done`
     const updated = [...shrinkItems];
-    updated[index].done = true;
+    updated[index].doneRemove = true;
     setShrinkItems(updated);
 
     // if everything is done
-    const doneItems = updated.filter((i) => i.done);
+    const doneItems = updated.filter((i) => i.doneRemove);
     if (doneItems.length === shrinkItems.length) {
       setPhase("insert");
     }
@@ -98,11 +98,11 @@ function RankingRetirementListing(props: Props) {
 
     // set insert status as `done`
     const updated = [...insertItems];
-    updated[index].done = true;
+    updated[index].doneInsert = true;
     setInsertItems(updated);
 
     // if everything is done
-    const doneItems = updated.filter((i) => i.done);
+    const doneItems = updated.filter((i) => i.doneInsert);
     if (doneItems.length === insertItems.length) {
       setPhase("done");
 
@@ -149,13 +149,13 @@ function RankingRetirementListing(props: Props) {
         <div className={styles.rankingList}>
           {augmentedItems.map((x) =>
             x.retired ? (
-              <ShrinkItem
+              <RemoveItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setShrinkDone(x.name)}
               >
                 <RankingItemNormal {...x} />
-              </ShrinkItem>
+              </RemoveItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
             )
