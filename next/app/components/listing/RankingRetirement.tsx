@@ -48,9 +48,12 @@ function RankingRetirementListing(props: Props) {
     props.currentItems,
     props.nextItems
   );
+  const sortedItems = moveRetiredItemsToBottom(
+    props.currentItems,
+    props.nextItems
+  );
   const initShrinkItems = extractShrinkItems(augmentedItems);
 
-  const [items, setItems] = useState(augmentedItems);
   const [phase, setPhase] = useState<AnimationPhase>("shrink");
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>(initShrinkItems);
   const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
@@ -65,13 +68,8 @@ function RankingRetirementListing(props: Props) {
           shrinkItems.findIndex((i) => !i.done) === -1;
 
         if (isShrinkDone) {
-          const updatedItems = moveRetiredItemsToBottom(
-            props.currentItems,
-            props.nextItems
-          );
           setPhase("insert");
-          setItems(updatedItems);
-          setInsertItems(extractInsertItems(updatedItems));
+          setInsertItems(extractInsertItems(sortedItems));
         }
         return;
       case "insert":
@@ -102,6 +100,7 @@ function RankingRetirementListing(props: Props) {
     onAnimationDone,
     insertItems,
     shrinkItems,
+    sortedItems,
   ]);
 
   function setShrinkDone(name: string) {
@@ -152,7 +151,7 @@ function RankingRetirementListing(props: Props) {
     case "shrink":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
+          {augmentedItems.map((x) =>
             x.retired ? (
               <ShrinkItem
                 key={x.name}
@@ -170,7 +169,7 @@ function RankingRetirementListing(props: Props) {
     case "insert":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
+          {sortedItems.map((x) =>
             x.retired ? (
               <InsertItem
                 key={x.name}
@@ -190,7 +189,7 @@ function RankingRetirementListing(props: Props) {
     case "callback":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => (
+          {sortedItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
@@ -198,7 +197,7 @@ function RankingRetirementListing(props: Props) {
     case "done":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => (
+          {sortedItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
