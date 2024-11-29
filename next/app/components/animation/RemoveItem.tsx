@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
-import styles from "./ShrinkItem.module.css";
+import styles from "./RemoveItem.module.css";
 
 type Props = {
   children: ReactNode;
@@ -14,7 +14,7 @@ type AnimationPhase =
   | "callback" //  call the callback only once
   | "done"; //     done everything
 
-export function ShrinkItem(props: Props) {
+export function RemoveItem(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
   const [phase, setPhase] = useState<AnimationPhase>("pre");

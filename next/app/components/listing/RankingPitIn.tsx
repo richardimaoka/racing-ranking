@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./RankingRetirement.module.css";
-import { ShrinkItem } from "../animation/ShrinkItem";
+import { RemoveItem } from "../animation/RemoveItem";
 import { InsertItem } from "../animation/InsertItem";
 import { RetiredItem } from "../item/RetiredItem";
 import {
@@ -167,13 +167,13 @@ function RankingPitInListing(props: Props) {
             x.retired ? (
               <RetiredItem key={x.name} {...x} />
             ) : x.pitIn ? (
-              <ShrinkItem
+              <RemoveItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setShrinkDone(x.name)}
               >
                 <RankingItemNormal key={x.name} {...x} />
-              </ShrinkItem>
+              </RemoveItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
             )

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
-import { ShrinkItem as AnimationState } from "../animation/ShrinkItem";
+import { RemoveItem } from "../animation/RemoveItem";
 import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
@@ -21,7 +21,7 @@ interface Props {
 type AnimationState = {
   name: string;
   height: number;
-  doneShrink: boolean;
+  doneRemove: boolean;
   doneInsert: boolean;
 };
 
@@ -30,18 +30,18 @@ function extractRetires(items: RankingItemProps[]): AnimationState[] {
     .filter((i) => i.retired)
     .map((i) => ({
       name: i.name,
-      doneShrink: false,
+      doneRemove: false,
       doneInsert: false,
       height: 0,
     }));
 }
 
-type AnimationPhase = "shrink" | "insert" | "done";
+type AnimationPhase = "remove" | "insert" | "done";
 
 function RankingRetirementListing(props: Props) {
   const initRetires = extractRetires(props.nextItems);
   const [retires, setRetires] = useState<AnimationState[]>(initRetires);
-  const [phase, setPhase] = useState<AnimationPhase>("shrink");
+  const [phase, setPhase] = useState<AnimationPhase>("remove");
 
   // Upon props change, reset the state, otherwise React states are preserved through props change.
   // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
@@ -54,10 +54,13 @@ function RankingRetirementListing(props: Props) {
     setCurrentItems(props.currentItems);
     setNextItems(props.nextItems);
     setRetires(initRetires);
-    setPhase("shrink");
+    setPhase("remove");
   }
 
-  function setShrinkDone(name: string) {
+  //--------------------------------------------
+  // Setters and getters on the `retires` state
+  //--------------------------------------------
+  function setRemoveDone(name: string) {
     const index = retires.findIndex((i) => i.name === name);
     if (index === -1 || index >= retires.length) {
       const itemNames = "[" + retires.map((i) => i.name).join(", ") + "]";
@@ -68,11 +71,11 @@ function RankingRetirementListing(props: Props) {
 
     // set insert status as `done`
     const updated = [...retires];
-    updated[index].doneShrink = true;
+    updated[index].doneRemove = true;
     setRetires(updated);
 
     // if everything is done
-    const doneItems = updated.filter((i) => i.doneShrink);
+    const doneItems = updated.filter((i) => i.doneRemove);
     if (doneItems.length === retires.length) {
       setPhase("insert");
     }
@@ -127,8 +130,11 @@ function RankingRetirementListing(props: Props) {
     return item.height;
   }
 
+  //--------------------------------------------
+  // Switched rendering
+  //--------------------------------------------
   switch (phase) {
-    case "shrink":
+    case "remove":
       const augmentedItems = augmentRetirementInfo(
         props.currentItems,
         props.nextItems
@@ -138,13 +144,13 @@ function RankingRetirementListing(props: Props) {
         <div className={styles.rankingList}>
           {augmentedItems.map((x) =>
             x.retired ? (
-              <AnimationState
+              <RemoveItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
-                onAnimationDone={() => setShrinkDone(x.name)}
+                onAnimationDone={() => setRemoveDone(x.name)}
               >
                 <RankingItemNormal {...x} />
-              </AnimationState>
+              </RemoveItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
             )
