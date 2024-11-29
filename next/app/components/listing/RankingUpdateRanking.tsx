@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { PitInItem } from "../item/PitInItem";
-import { RankingItem, RankingItemProps } from "../item/RankingItem";
-import { RetiredItem } from "../item/RetiredItem";
+import { RankingItemProps } from "../item/RankingItem";
+import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
 import { movePitInItemsToBottom } from "./rankingPitInListing";
 import { updateRanking } from "./rankingUpdateRanking";
@@ -51,57 +50,33 @@ function RankingUpdateRankingListing(props: Props) {
     case "pre":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
-              <PitInItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     case "updating":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
-              <PitInItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     case "callback":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
-              <PitInItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     case "done":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
-              <PitInItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     default:

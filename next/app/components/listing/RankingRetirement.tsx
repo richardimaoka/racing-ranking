@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
 import { ShrinkItem } from "../animation/ShrinkItem";
+import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { RetiredItem } from "../item/RetiredItem";

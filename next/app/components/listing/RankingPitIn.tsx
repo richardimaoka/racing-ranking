@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { PanelHeader } from "../PanelHeader";
-import { RankingItem, RankingItemProps } from "../item/RankingItem";
 import styles from "./RankingRetirement.module.css";
 import { ShrinkItem } from "../animation/ShrinkItem";
 import { InsertItem } from "../animation/InsertItem";
@@ -10,6 +9,9 @@ import {
   movePitInItemsToBottom,
 } from "./rankingPitInListing";
 import { PitInItem } from "../item/PitInItem";
+import { RankingItemNormal } from "../item/RankingItemNormal";
+import { RankingItemStatic } from "../item/RankingItemStatic";
+import { RankingItemProps } from "../item/RankingItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -153,13 +155,9 @@ function RankingPitInListing(props: Props) {
     case "pre":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     case "shrink":
@@ -174,10 +172,10 @@ function RankingPitInListing(props: Props) {
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setShrinkDone(x.name)}
               >
-                <RankingItem key={x.name} {...x} />
+                <RankingItemNormal key={x.name} {...x} />
               </ShrinkItem>
             ) : (
-              <RankingItem key={x.name} {...x} />
+              <RankingItemStatic key={x.name} {...x} />
             )
           )}
         </div>
@@ -199,7 +197,7 @@ function RankingPitInListing(props: Props) {
                 <PitInItem key={x.name} {...x} />
               </InsertItem>
             ) : (
-              <RankingItem key={x.name} {...x} />
+              <RankingItemStatic key={x.name} {...x} />
             )
           )}
         </div>
@@ -207,29 +205,17 @@ function RankingPitInListing(props: Props) {
     case "callback":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
-              <PitInItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     case "done":
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
-              <PitInItem key={x.name} {...x} />
-            ) : (
-              <RankingItem key={x.name} {...x} />
-            )
-          )}
+          {items.map((x) => (
+            <RankingItemStatic key={x.name} {...x} />
+          ))}
         </div>
       );
     default:

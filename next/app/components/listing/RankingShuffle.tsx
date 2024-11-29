@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { RankingItem, RankingItemProps } from "../item/RankingItem";
-import { PanelHeader } from "../PanelHeader";
-import styles from "./RankingShuffle.module.css";
 import { ShuffleItem } from "../animation/ShuffleItem";
-import { afterShuffle, augmentShuffleInfo } from "./rankingShuffle";
+import { RankingItemProps } from "../item/RankingItem";
+import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
+import { PanelHeader } from "../PanelHeader";
+import { afterShuffle, augmentShuffleInfo } from "./rankingShuffle";
+import styles from "./RankingShuffle.module.css";
 
 type Props = {
   currentItems: RankingItemProps[];
@@ -107,7 +108,7 @@ function RankingShuffleListing(props: Props) {
                 onAnimationDone={() => setShuffleDone(x.name)}
                 name={x.name}
               >
-                <RankingItem key={x.name} {...x} />
+                <RankingItemNormal key={x.name} {...x} />
               </ShuffleItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
