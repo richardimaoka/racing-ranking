@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
-import { ShrinkItem as RemoveItem } from "../animation/ShrinkItem";
+import { ShrinkItem as AnimationState } from "../animation/ShrinkItem";
 import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
@@ -18,38 +18,30 @@ interface Props {
   onAnimationDone?: () => void;
 }
 
-type RemoveItem = {
+type AnimationState = {
   name: string;
   height: number;
-  doneRemove: boolean;
-};
-
-function extractShrinkItems(items: RankingItemProps[]): RemoveItem[] {
-  return items
-    .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, doneRemove: false, height: 0 }));
-}
-
-type InsertItem = {
-  name: string;
+  doneShrink: boolean;
   doneInsert: boolean;
 };
 
-function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
+function extractRetires(items: RankingItemProps[]): AnimationState[] {
   return items
     .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, doneInsert: false }));
+    .map((i) => ({
+      name: i.name,
+      doneShrink: false,
+      doneInsert: false,
+      height: 0,
+    }));
 }
 
 type AnimationPhase = "shrink" | "insert" | "done";
 
 function RankingRetirementListing(props: Props) {
-  const initShrinkItems = extractShrinkItems(props.nextItems);
-  const initInsertItems = extractInsertItems(props.nextItems);
-
+  const initRetires = extractRetires(props.nextItems);
+  const [retires, setRetires] = useState<AnimationState[]>(initRetires);
   const [phase, setPhase] = useState<AnimationPhase>("shrink");
-  const [shrinkItems, setShrinkItems] = useState<RemoveItem[]>(initShrinkItems);
-  const [insertItems, setInsertItems] = useState<InsertItem[]>(initInsertItems);
 
   // Upon props change, reset the state, otherwise React states are preserved through props change.
   // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
@@ -61,49 +53,48 @@ function RankingRetirementListing(props: Props) {
   ) {
     setCurrentItems(props.currentItems);
     setNextItems(props.nextItems);
-    setShrinkItems(initShrinkItems);
-    setInsertItems(initInsertItems);
+    setRetires(initRetires);
     setPhase("shrink");
   }
 
   function setShrinkDone(name: string) {
-    const index = shrinkItems.findIndex((i) => i.name === name);
-    if (index === -1 || index >= shrinkItems.length) {
-      const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
+    const index = retires.findIndex((i) => i.name === name);
+    if (index === -1 || index >= retires.length) {
+      const itemNames = "[" + retires.map((i) => i.name).join(", ") + "]";
       throw new Error(
         `name = ${name} not found in ${itemNames}. index = ${index} out of range`
       );
     }
 
     // set insert status as `done`
-    const updated = [...shrinkItems];
-    updated[index].doneRemove = true;
-    setShrinkItems(updated);
+    const updated = [...retires];
+    updated[index].doneShrink = true;
+    setRetires(updated);
 
     // if everything is done
-    const doneItems = updated.filter((i) => i.doneRemove);
-    if (doneItems.length === shrinkItems.length) {
+    const doneItems = updated.filter((i) => i.doneShrink);
+    if (doneItems.length === retires.length) {
       setPhase("insert");
     }
   }
 
   function setInsertDone(name: string) {
-    const index = insertItems.findIndex((i) => i.name === name);
-    if (index === -1 || index >= insertItems.length) {
-      const itemNames = "[" + insertItems.map((i) => i.name).join(", ") + "]";
+    const index = retires.findIndex((i) => i.name === name);
+    if (index === -1 || index >= retires.length) {
+      const itemNames = "[" + retires.map((i) => i.name).join(", ") + "]";
       throw new Error(
         `name = ${name} not found in ${itemNames}. index = ${index} out of range`
       );
     }
 
     // set insert status as `done`
-    const updated = [...insertItems];
+    const updated = [...retires];
     updated[index].doneInsert = true;
-    setInsertItems(updated);
+    setRetires(updated);
 
     // if everything is done
     const doneItems = updated.filter((i) => i.doneInsert);
-    if (doneItems.length === insertItems.length) {
+    if (doneItems.length === retires.length) {
       setPhase("done");
 
       if (props.onAnimationDone) {
@@ -113,26 +104,24 @@ function RankingRetirementListing(props: Props) {
   }
 
   function setItemHeight(name: string, height: number) {
-    const index = shrinkItems.findIndex((i) => i.name === name);
-    if (index === -1 || index >= shrinkItems.length) {
-      const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
+    const index = retires.findIndex((i) => i.name === name);
+    if (index === -1 || index >= retires.length) {
+      const itemNames = "[" + retires.map((i) => i.name).join(", ") + "]";
       throw new Error(
         `name = ${name} not found in ${itemNames}. index = ${index} out of range`
       );
     }
 
-    const updated = [...shrinkItems];
+    const updated = [...retires];
     updated[index].height = height;
-    setShrinkItems(updated);
+    setRetires(updated);
   }
 
   function getItemHeight(name: string) {
-    const item = shrinkItems.find((i) => i.name === name);
+    const item = retires.find((i) => i.name === name);
     if (!item) {
-      const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
-      throw new Error(
-        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
-      );
+      const itemNames = "[" + retires.map((i) => i.name).join(", ") + "]";
+      throw new Error(`name = ${name} not found in ${itemNames}`);
     }
 
     return item.height;
@@ -149,13 +138,13 @@ function RankingRetirementListing(props: Props) {
         <div className={styles.rankingList}>
           {augmentedItems.map((x) =>
             x.retired ? (
-              <RemoveItem
+              <AnimationState
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setShrinkDone(x.name)}
               >
                 <RankingItemNormal {...x} />
-              </RemoveItem>
+              </AnimationState>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
             )
