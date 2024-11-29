@@ -21,13 +21,13 @@ interface Props {
 type ShrinkItem = {
   name: string;
   height: number;
-  doneShrink: boolean;
+  done: boolean;
 };
 
 function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
   return items
     .filter((i) => i.retired)
-    .map((i) => ({ name: i.name, doneShrink: false, height: 0 }));
+    .map((i) => ({ name: i.name, done: false, height: 0 }));
 }
 
 type InsertItem = {
@@ -63,12 +63,11 @@ function RankingRetirementListing(props: Props) {
     setNextItems(props.nextItems);
     setShrinkItems(initShrinkItems);
     setInsertItems(initInsertItems);
+    setPhase("shrink");
   }
 
   function setShrinkDone(name: string) {
     const index = shrinkItems.findIndex((i) => i.name === name);
-    const updated = [...shrinkItems];
-
     if (index === -1 || index >= shrinkItems.length) {
       const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
       throw new Error(
@@ -77,39 +76,19 @@ function RankingRetirementListing(props: Props) {
     }
 
     // set insert status as `done`
-    updated[index].doneShrink = true;
+    const updated = [...shrinkItems];
+    updated[index].done = true;
     setShrinkItems(updated);
 
-    const doneItems = updated.filter((i) => i.doneShrink);
-    const shrinkItems2 = updated;
     // if everything is done
-    if (doneItems.length === shrinkItems2.length) {
+    const doneItems = updated.filter((i) => i.done);
+    if (doneItems.length === shrinkItems.length) {
       setPhase("insert");
     }
   }
 
-  function setItemHeight(name: string, height: number) {
-    const index = shrinkItems.findIndex((i) => i.name === name);
-    const updated = [...shrinkItems];
-
-    if (index < shrinkItems.length) {
-      updated[index].height = height;
-    } else {
-      // supposedly this shouldn't happen....
-    }
-
-    setShrinkItems(updated);
-  }
-
-  function getItemHeight(name: string) {
-    const item = shrinkItems.find((i) => i.name === name);
-    return item ? item.height : 0;
-  }
-
   function setInsertDone(name: string) {
     const index = insertItems.findIndex((i) => i.name === name);
-    const updated = [...insertItems];
-
     if (index === -1 || index >= insertItems.length) {
       const itemNames = "[" + insertItems.map((i) => i.name).join(", ") + "]";
       throw new Error(
@@ -118,19 +97,45 @@ function RankingRetirementListing(props: Props) {
     }
 
     // set insert status as `done`
+    const updated = [...insertItems];
     updated[index].done = true;
     setInsertItems(updated);
 
-    const doneItems = updated.filter((i) => i.done);
-    const insertItems2 = updated;
     // if everything is done
-    if (doneItems.length === insertItems2.length) {
+    const doneItems = updated.filter((i) => i.done);
+    if (doneItems.length === insertItems.length) {
       setPhase("done");
 
       if (props.onAnimationDone) {
         props.onAnimationDone();
       }
     }
+  }
+
+  function setItemHeight(name: string, height: number) {
+    const index = shrinkItems.findIndex((i) => i.name === name);
+    if (index === -1 || index >= shrinkItems.length) {
+      const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+      );
+    }
+
+    const updated = [...shrinkItems];
+    updated[index].height = height;
+    setShrinkItems(updated);
+  }
+
+  function getItemHeight(name: string) {
+    const item = shrinkItems.find((i) => i.name === name);
+    if (!item) {
+      const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+      );
+    }
+
+    return item.height;
   }
 
   switch (phase) {
@@ -162,6 +167,7 @@ function RankingRetirementListing(props: Props) {
         props.currentItems,
         props.nextItems
       );
+
       return (
         <div className={styles.rankingList}>
           {sortedItems.map((x) =>
@@ -187,6 +193,7 @@ function RankingRetirementListing(props: Props) {
         props.currentItems,
         props.nextItems
       );
+
       return (
         <div className={styles.rankingList}>
           {sortedItems.map((x) => (
