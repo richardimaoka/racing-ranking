@@ -1,5 +1,6 @@
+import { RankingItemProps } from "./item/RankingItem";
+import { RankingItemStatic } from "./item/RankingItemStatic";
 import { PanelHeader } from "./PanelHeader";
-import { RankingItem, RankingItemProps } from "./item/RankingItem";
 import styles from "./RankingPanelLayout.module.css";
 
 interface Props {
@@ -12,15 +13,7 @@ export function RankingPanelLayout(props: Props) {
       <PanelHeader />
       <div className={styles.rankingList}>
         {props.items.map((x) => (
-          <RankingItem
-            key={x.name}
-            team={x.team}
-            teamIconPath={x.teamIconPath}
-            name={x.name}
-            ranking={x.ranking}
-            interval={x.interval}
-            next={x.next}
-          />
+          <RankingItemStatic key={x.name} {...x} />
         ))}
       </div>
     </div>
