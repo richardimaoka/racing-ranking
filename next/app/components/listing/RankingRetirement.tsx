@@ -41,28 +41,24 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
     .map((i) => ({ name: i.name, done: false }));
 }
 
-type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
+type AnimationPhase = "shrink" | "insert" | "callback" | "done";
 
 function RankingRetirementListing(props: Props) {
-  const [items, setItems] = useState(props.currentItems);
-  const [phase, setPhase] = useState<AnimationPhase>("pre");
-  const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>([]);
+  const augmentedItems = augmentRetirementInfo(
+    props.currentItems,
+    props.nextItems
+  );
+  const initShrinkItems = extractShrinkItems(augmentedItems);
+
+  const [items, setItems] = useState(augmentedItems);
+  const [phase, setPhase] = useState<AnimationPhase>("shrink");
+  const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>(initShrinkItems);
   const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
 
   const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
     switch (phase) {
-      case "pre":
-        const augmentedItems = augmentRetirementInfo(
-          props.currentItems,
-          props.nextItems
-        );
-
-        setItems(augmentedItems);
-        setShrinkItems(extractShrinkItems(augmentedItems));
-        setPhase("shrink");
-        return;
       case "shrink":
         const isShrinkDone =
           shrinkItems.length > 0 &&
@@ -153,14 +149,6 @@ function RankingRetirementListing(props: Props) {
   }
 
   switch (phase) {
-    case "pre":
-      return (
-        <div className={styles.rankingList}>
-          {items.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
-          ))}
-        </div>
-      );
     case "shrink":
       return (
         <div className={styles.rankingList}>
