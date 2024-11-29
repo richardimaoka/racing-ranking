@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
 import { ShrinkItem } from "../animation/ShrinkItem";
 import { RankingItemProps } from "../item/RankingItem";
@@ -41,7 +41,7 @@ function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
     .map((i) => ({ name: i.name, done: false }));
 }
 
-type AnimationPhase = "shrink" | "insert" | "callback" | "done";
+type AnimationPhase = "shrink" | "insert" | "done";
 
 function RankingRetirementListing(props: Props) {
   const augmentedItems = augmentRetirementInfo(
@@ -73,50 +73,31 @@ function RankingRetirementListing(props: Props) {
     setInsertItems([]);
   }
 
-  const onAnimationDone = props.onAnimationDone;
+  switch (phase) {
+    case "shrink":
+      const isShrinkDone =
+        shrinkItems.length > 0 && shrinkItems.findIndex((i) => !i.done) === -1;
 
-  useEffect(() => {
-    switch (phase) {
-      case "shrink":
-        const isShrinkDone =
-          shrinkItems.length > 0 &&
-          shrinkItems.findIndex((i) => !i.done) === -1;
+      if (isShrinkDone) {
+        setPhase("insert");
+        setInsertItems(extractInsertItems(sortedItems));
+      }
+      break;
+    case "insert":
+      const isInsertDone =
+        insertItems.length > 0 && insertItems.findIndex((i) => !i.done) === -1;
 
-        if (isShrinkDone) {
-          setPhase("insert");
-          setInsertItems(extractInsertItems(sortedItems));
-        }
-        return;
-      case "insert":
-        const isInsertDone =
-          insertItems.length > 0 &&
-          insertItems.findIndex((i) => !i.done) === -1;
-
-        if (isInsertDone) {
-          setPhase("callback");
-        }
-        return;
-      case "callback":
-        if (onAnimationDone) {
-          onAnimationDone();
-        }
-        return;
-      case "done":
-        // do nothing
-        return;
-      default:
-        const _exhaustiveCheck: never = phase;
-        return _exhaustiveCheck;
-    }
-  }, [
-    phase,
-    props.currentItems,
-    props.nextItems,
-    onAnimationDone,
-    insertItems,
-    shrinkItems,
-    sortedItems,
-  ]);
+      if (isInsertDone) {
+        setPhase("done");
+      }
+      break;
+    case "done":
+      // do nothing
+      break;
+    default:
+      const _exhaustiveCheck: never = phase;
+      return _exhaustiveCheck;
+  }
 
   function setShrinkDone(name: string) {
     const index = shrinkItems.findIndex((i) => i.name === name);
@@ -153,13 +134,25 @@ function RankingRetirementListing(props: Props) {
     const index = insertItems.findIndex((i) => i.name === name);
     const updated = [...insertItems];
 
-    if (index < insertItems.length) {
-      updated[index].done = true;
-    } else {
-      // supposedly this shouldn't happen....
+    if (index === -1 || index >= insertItems.length) {
+      const itemNames = "[" + insertItems.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+      );
     }
 
+    // set insert status as `done`
+    updated[index].done = true;
     setInsertItems(updated);
+
+    const doneItems = updated.filter((i) => i.done);
+    const insertItems2 = updated;
+    // if everything is done
+    if (doneItems.length === insertItems2.length) {
+      if (props.onAnimationDone) {
+        props.onAnimationDone();
+      }
+    }
   }
 
   switch (phase) {
@@ -199,14 +192,6 @@ function RankingRetirementListing(props: Props) {
               <RankingItemStatic key={x.name} {...x} />
             )
           )}
-        </div>
-      );
-    case "callback":
-      return (
-        <div className={styles.rankingList}>
-          {sortedItems.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
-          ))}
         </div>
       );
     case "done":
