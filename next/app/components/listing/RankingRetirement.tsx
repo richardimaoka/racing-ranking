@@ -58,6 +58,21 @@ function RankingRetirementListing(props: Props) {
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>(initShrinkItems);
   const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
 
+  const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);
+  const [prevdNextItems, setNextItems] = useState(props.nextItems);
+
+  // Upon props change, reset the state, otherwise React states are preserved through props change.
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (
+    prevCurrentItems !== props.currentItems ||
+    prevdNextItems !== props.nextItems
+  ) {
+    setCurrentItems(props.currentItems);
+    setNextItems(props.nextItems);
+    setShrinkItems(initShrinkItems);
+    setInsertItems([]);
+  }
+
   const onAnimationDone = props.onAnimationDone;
 
   useEffect(() => {
