@@ -53,10 +53,11 @@ function RankingRetirementListing(props: Props) {
     props.nextItems
   );
   const initShrinkItems = extractShrinkItems(augmentedItems);
+  const initInsertItems = extractInsertItems(sortedItems);
 
   const [phase, setPhase] = useState<AnimationPhase>("shrink");
   const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>(initShrinkItems);
-  const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
+  const [insertItems, setInsertItems] = useState<InsertItem[]>(initInsertItems);
 
   const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);
   const [prevdNextItems, setNextItems] = useState(props.nextItems);
@@ -70,18 +71,11 @@ function RankingRetirementListing(props: Props) {
     setCurrentItems(props.currentItems);
     setNextItems(props.nextItems);
     setShrinkItems(initShrinkItems);
-    setInsertItems([]);
+    setInsertItems(initInsertItems);
   }
 
   switch (phase) {
     case "shrink":
-      const isShrinkDone =
-        shrinkItems.length > 0 && shrinkItems.findIndex((i) => !i.done) === -1;
-
-      if (isShrinkDone) {
-        setPhase("insert");
-        setInsertItems(extractInsertItems(sortedItems));
-      }
       break;
     case "insert":
       const isInsertDone =
@@ -103,13 +97,22 @@ function RankingRetirementListing(props: Props) {
     const index = shrinkItems.findIndex((i) => i.name === name);
     const updated = [...shrinkItems];
 
-    if (index < shrinkItems.length) {
-      updated[index].done = true;
-    } else {
-      // supposedly this shouldn't happen....
+    if (index === -1 || index >= shrinkItems.length) {
+      const itemNames = "[" + shrinkItems.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+      );
     }
-
+    // set insert status as `done`
+    updated[index].done = true;
     setShrinkItems(updated);
+
+    const doneItems = updated.filter((i) => i.done);
+    const shrinkItems2 = updated;
+    // if everything is done
+    if (doneItems.length === shrinkItems2.length) {
+      setPhase("insert");
+    }
   }
 
   function setItemHeight(name: string, height: number) {
