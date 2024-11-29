@@ -6,6 +6,7 @@ type Props = {
   currentRank: number;
   nextRank: number;
   onAnimationDone?: () => void;
+  name: string;
 };
 
 type AnimationPhase = "pre" | "animating" | "done callback" | "done";
@@ -46,14 +47,6 @@ export function ShuffleItem(props: Props) {
           setPhase("animating");
         }
         return;
-      // case "ready":
-      //   // without setTimeout, the height doesn't animate but immediately becomes 0
-      //   const timeoutId = setTimeout(async () => {
-      //     setPhase("animating");
-      //   }, 10);
-      //   return () => {
-      //     clearTimeout(timeoutId);
-      //   };
       case "animating":
         // do nothing - phase change will be done by onTransitionEnd event handler
         return;
@@ -76,7 +69,17 @@ export function ShuffleItem(props: Props) {
     switch (phase) {
       case "pre":
         return undefined;
+
       case "animating":
+        console.log(
+          "ShuffleItem",
+          props.name,
+          "curent rank = ",
+          props.currentRank,
+          "next rank = ",
+          props.nextRank,
+          translateStyle(props.currentRank, props.nextRank, itemHeight)
+        );
         return translateStyle(props.currentRank, props.nextRank, itemHeight);
       case "done callback":
         return translateStyle(props.currentRank, props.nextRank, itemHeight);

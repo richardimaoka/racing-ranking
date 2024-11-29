@@ -42,3 +42,7 @@ export function movePitInItemsToBottom(
   // move pit-in items to the bottom
   return preservedItems.concat(pitInItems).concat(retiredItems);
 }
+
+export function skipPitInPhase(nextItems: RankingItemProps[]): boolean {
+  return nextItems.findIndex((i) => i.pitIn) === -1;
+}

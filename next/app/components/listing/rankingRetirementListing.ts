@@ -26,3 +26,7 @@ export function moveRetiredItemsToBottom(
   // move retired items to the bottom
   return nonRetiredItems.concat(retiredItems);
 }
+
+export function skipRetirementPhase(nextItems: RankingItemProps[]): boolean {
+  return nextItems.findIndex((i) => i.retired) === -1;
+}

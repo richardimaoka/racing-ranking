@@ -6,6 +6,9 @@ import { RankingRetirement } from "./listing/RankingRetirement";
 import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";
 import { RankingUpdateRanking } from "./listing/RankingUpdateRanking";
+import { skipRetirementPhase } from "./listing/rankingRetirementListing";
+import { skipPitInPhase } from "./listing/rankingPitInListing";
+import { RankingShuffle } from "./listing/RankingShuffle";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -34,7 +37,7 @@ export function RankingPanelState(props: Props) {
   const [items] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
-  // console.log("RankingPanelState", phase, items);
+  console.log("RankingPanelState", phase, items);
 
   useEffect(() => {
     switch (phase) {
@@ -51,10 +54,14 @@ export function RankingPanelState(props: Props) {
           clearTimeout(timeoutId);
         };
       case "retire":
-        // do nothing - phase change to "pit in" is done by callback
+        if (skipRetirementPhase(nextItems)) {
+          setPhase("pit in");
+        }
         break;
       case "pit in":
-        // do nothing - phase change to "pit in" is done by callback
+        if (skipPitInPhase(nextItems)) {
+          setPhase("rank update");
+        }
         break;
       case "rank update":
         // do nothing - phase change to "pit in" is done by callback
@@ -67,7 +74,7 @@ export function RankingPanelState(props: Props) {
         const _exhaustiveCheck: never = phase;
         return _exhaustiveCheck;
     }
-  }, [count, items, phase]);
+  }, [count, items, nextItems, phase]);
 
   switch (phase) {
     case "fetch":
@@ -104,7 +111,7 @@ export function RankingPanelState(props: Props) {
       );
     case "shuffle":
       return (
-        <RankingUpdateRanking
+        <RankingShuffle
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {

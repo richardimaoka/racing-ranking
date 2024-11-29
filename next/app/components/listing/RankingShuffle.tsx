@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RankingItem, RankingItemProps } from "../item/RankingItem";
 import { PanelHeader } from "../PanelHeader";
-import styles from "./RankingListingShuffle.module.css";
+import styles from "./RankingShuffle.module.css";
 import { ShuffleItem } from "../animation/ShuffleItem";
 import { afterShuffle, augmentShuffleInfo } from "./rankingShuffle";
 
@@ -16,14 +16,25 @@ type ShuffleItem = {
   done: boolean;
 };
 
+function extractShuffleItems(items: RankingItemProps[]): ShuffleItem[] {
+  return items
+    .filter((item, index) => {
+      const currentRank = index + 1;
+      return item.next && currentRank !== item.next.ranking;
+    })
+    .map((i) => ({ name: i.name, done: false }));
+}
+
 type AnimationPhase = "shuffle" | "done callback" | "done";
 
 function RankingShuffleListing(props: Props) {
   const initItems = augmentShuffleInfo(props.currentItems, props.nextItems);
+  const initShuffleItems = extractShuffleItems(initItems);
 
   const [items, setItems] = useState(initItems);
   const [phase, setPhase] = useState<AnimationPhase>("shuffle");
-  const [shuffleItems, setShuffleItems] = useState<ShuffleItem[]>([]);
+  const [shuffleItems, setShuffleItems] =
+    useState<ShuffleItem[]>(initShuffleItems);
 
   const onAnimationDone = props.onAnimationDone;
 
@@ -34,14 +45,14 @@ function RankingShuffleListing(props: Props) {
           shuffleItems.length > 0 &&
           shuffleItems.findIndex((i) => !i.done) === -1;
 
-        if (isShuffleDone) {
-          const updatedItems = afterShuffle(
-            props.currentItems,
-            props.nextItems
-          );
-          setPhase("done callback");
-          setItems(updatedItems);
-        }
+        // if (isShuffleDone) {
+        //   const updatedItems = afterShuffle(
+        //     props.currentItems,
+        //     props.nextItems
+        //   );
+        //    setPhase("done callback");
+        //    setItems(updatedItems);
+        // }
         return;
       case "done callback":
         if (onAnimationDone) {
@@ -68,10 +79,14 @@ function RankingShuffleListing(props: Props) {
     const index = shuffleItems.findIndex((i) => i.name === name);
     const updated = [...shuffleItems];
 
-    if (index < shuffleItems.length) {
-      updated[index].done = true;
+    if (index === -1 || index >= shuffleItems.length) {
+      const shuffleNames =
+        "[" + shuffleItems.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${shuffleNames}. index = ${index} out of range`
+      );
     } else {
-      // supposedly this shouldn't happen....
+      updated[index].done = true;
     }
 
     setShuffleItems(updated);
@@ -89,6 +104,7 @@ function RankingShuffleListing(props: Props) {
                 currentRank={index + 1}
                 nextRank={x.next.ranking}
                 onAnimationDone={() => setShuffleDone(x.name)}
+                name={x.name}
               >
                 <RankingItem key={x.name} {...x} />
               </ShuffleItem>
