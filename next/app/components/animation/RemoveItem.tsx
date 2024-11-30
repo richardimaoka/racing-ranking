@@ -11,7 +11,6 @@ type AnimationPhase =
   | "pre" //       calculate the height
   | "ready" //     trigger animation with setTimeout - without setTimeout, the height doesn't animate but immediately becomes 0
   | "animating" // animation starts
-  | "callback" //  call the callback only once
   | "done"; //     done everything
 
 export function RemoveItem(props: Props) {
@@ -59,12 +58,7 @@ export function RemoveItem(props: Props) {
       case "animating":
         // do nothing - phase change will be done by onTransitionEnd event handler
         return;
-      case "callback":
-        if (onAnimationDone) {
-          onAnimationDone();
-        }
-        setPhase("done");
-        return;
+
       case "done":
         // do nothing
         return;
@@ -75,7 +69,10 @@ export function RemoveItem(props: Props) {
   }, [phase, height, onHeightCalculated, onAnimationDone]);
 
   function onTransitionEnd() {
-    setPhase("callback");
+    if (onAnimationDone) {
+      onAnimationDone();
+    }
+    setPhase("done");
   }
 
   function calcStyle() {
@@ -85,8 +82,6 @@ export function RemoveItem(props: Props) {
       case "ready":
         return { height: height };
       case "animating":
-        return { height: 0 };
-      case "callback":
         return { height: 0 };
       case "done":
         return { height: 0 };
