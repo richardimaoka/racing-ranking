@@ -7,7 +7,12 @@ type Props = {
   onAnimationDone?: () => void;
 };
 
-type AnimationPhase = "calc height" | "show cover" | "shrink" | "done";
+type AnimationPhase =
+  | "calc height"
+  | "show cover"
+  | "slide out"
+  | "shrink"
+  | "done";
 
 export function RemoveRetiredItem(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -48,14 +53,25 @@ export function RemoveRetiredItem(props: Props) {
       );
     case "show cover":
       return (
-        <div style={{ height: height }} className={styles.component}>
+        <div className={styles.component}>
           {props.children}
           <div
             className={styles.cover + " " + styles.appear}
-            onAnimationEnd={() => setPhase("shrink")}
+            onAnimationEnd={() => setPhase("slide out")}
           >
             RETIRED
           </div>
+        </div>
+      );
+    case "slide out":
+      return (
+        <div
+          style={{ height: height }}
+          onAnimationEnd={() => setPhase("shrink")}
+          className={styles.component + " " + styles.slideOut}
+        >
+          {props.children}
+          <div className={styles.cover}>RETIRED</div>
         </div>
       );
     case "shrink":
@@ -67,26 +83,17 @@ export function RemoveRetiredItem(props: Props) {
             height: 0,
           }}
           className={styles.component}
-        >
-          {props.children}
-          <div className={styles.cover + " " + styles.opacity09}>RETIRED</div>
-        </div>
-      );
-    case "done":
-      return (
-        <div
-          style={{ height: 0 }}
-          className={styles.component}
           onTransitionEnd={() => {
+            console.log("on transition endddd!!!!");
             if (onAnimationDone) {
               onAnimationDone();
             }
             setPhase("done");
           }}
-        >
-          {props.children}
-        </div>
+        ></div>
       );
+    case "done":
+      return <div style={{ height: 0 }} className={styles.component}></div>;
     default:
       const _exhaustiveCheck: never = phase;
       return _exhaustiveCheck;

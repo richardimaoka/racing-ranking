@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
-import { RemoveItem } from "../animation/RemoveItem";
 import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";

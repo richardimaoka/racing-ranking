@@ -17,15 +17,6 @@
   z-index: 1;
 }
 
-@keyframes appear {
-  0% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 0.9;
-  }
-}
-
 .cover {
   z-index: 2;
 
@@ -41,6 +32,18 @@
   background-color: #20201f;
   color: rgb(255, 255, 255);
   font-weight: 900;
+
+  /* .appear animation will override this*/
+  opacity: 0.9;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.9;
+  }
 }
 
 .appear {
@@ -49,6 +52,21 @@
   animation-fill-mode: forwards;
 }
 
-.opacity09 {
-  opacity: 0.9;
+@keyframes slideOut {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(-120%);
+  }
+}
+
+.slideOut {
+  overflow-x: hidden;
+}
+
+.slideOut > * {
+  animation-name: slideOut;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
 }
