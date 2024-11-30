@@ -1,18 +1,17 @@
-import { useEffect, useState } from "react";
-import { PanelHeader } from "../PanelHeader";
-import styles from "./RankingRetirement.module.css";
-import { RemoveItem } from "../animation/RemoveItem";
+import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
-import { RetiredItem } from "../item/RetiredItem";
+import { RemovePitInItem } from "../animation/RemovePitInItem";
+import { RankingItemProps } from "../item/RankingItem";
+import { RankingItemNormal } from "../item/RankingItemNormal";
+import { RankingItemStatic } from "../item/RankingItemStatic";
+import { PanelHeader } from "../PanelHeader";
 import {
   fromRetirementPhase,
   movePitInItemsToBottom,
 } from "./rankingPitInListing";
+import styles from "./RankingRetirement.module.css";
+import { moveRetiredItemsToBottom } from "./rankingRetirementListing";
 import { PitInItem } from "../item/PitInItem";
-import { RankingItemNormal } from "../item/RankingItemNormal";
-import { RankingItemStatic } from "../item/RankingItemStatic";
-import { RankingItemProps } from "../item/RankingItem";
-import { RemovePitInItem } from "../animation/RemovePitInItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -20,160 +19,138 @@ interface Props {
   onAnimationDone?: () => void;
 }
 
-type ShrinkItem = {
+type AnimationState = {
   name: string;
   height: number;
-  done: boolean;
+  doneRemove: boolean;
+  doneInsert: boolean;
 };
 
-function extractShrinkItems(items: RankingItemProps[]): ShrinkItem[] {
+function extractPitIns(items: RankingItemProps[]): AnimationState[] {
   return items
     .filter((i) => i.pitIn)
-    .map((i) => ({ name: i.name, done: false, height: 0 }));
+    .map((i) => ({
+      name: i.name,
+      doneRemove: false,
+      doneInsert: false,
+      height: 0,
+    }));
 }
 
-type InsertItem = {
-  name: string;
-  done: boolean;
-};
-
-function extractInsertItems(items: RankingItemProps[]): InsertItem[] {
-  return items
-    .filter((i) => i.pitIn)
-    .map((i) => ({ name: i.name, done: false }));
-}
-
-type AnimationPhase = "pre" | "shrink" | "insert" | "callback" | "done";
+type AnimationPhase = "remove" | "insert" | "done";
 
 function RankingPitInListing(props: Props) {
-  const initItems = fromRetirementPhase(props.currentItems, props.nextItems);
+  const initPitIns = extractPitIns(props.nextItems);
+  const [pitIns, setRetires] = useState<AnimationState[]>(initPitIns);
+  const [phase, setPhase] = useState<AnimationPhase>("remove");
 
-  const [items, setItems] = useState(initItems);
-  const [phase, setPhase] = useState<AnimationPhase>("pre");
-  const [shrinkItems, setShrinkItems] = useState<ShrinkItem[]>([]);
-  const [insertItems, setInsertItems] = useState<InsertItem[]>([]);
+  console.log("RankingPitIn", phase);
 
-  const onAnimationDone = props.onAnimationDone;
-
-  useEffect(() => {
-    switch (phase) {
-      case "pre":
-        setShrinkItems(extractShrinkItems(initItems));
-        setPhase("shrink");
-        return;
-      case "shrink":
-        const isShrinkDone =
-          shrinkItems.length > 0 &&
-          shrinkItems.findIndex((i) => !i.done) === -1;
-
-        if (isShrinkDone) {
-          const updatedItems = movePitInItemsToBottom(
-            props.currentItems,
-            props.nextItems
-          );
-          setPhase("insert");
-          setItems(updatedItems);
-          setInsertItems(extractInsertItems(updatedItems));
-        }
-        return;
-      case "insert":
-        const isInsertDone =
-          insertItems.length > 0 &&
-          insertItems.findIndex((i) => !i.done) === -1;
-
-        if (isInsertDone) {
-          setPhase("callback");
-        }
-        return;
-      case "callback":
-        if (onAnimationDone) {
-          onAnimationDone();
-        }
-        return;
-      case "done":
-        // do nothing
-        return;
-      default:
-        const _exhaustiveCheck: never = phase;
-        return _exhaustiveCheck;
-    }
-  }, [
-    phase,
-    props.currentItems,
-    props.nextItems,
-    onAnimationDone,
-    insertItems,
-    shrinkItems,
-    initItems,
-  ]);
-
-  function setShrinkDone(name: string) {
-    const index = shrinkItems.findIndex((i) => i.name === name);
-    const updated = [...shrinkItems];
-
-    if (index < shrinkItems.length) {
-      updated[index].done = true;
-    } else {
-      // supposedly this shouldn't happen....
-    }
-
-    setShrinkItems(updated);
+  // Upon props change, reset the state, otherwise React states are preserved through props change.
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);
+  const [prevdNextItems, setNextItems] = useState(props.nextItems);
+  if (
+    prevCurrentItems !== props.currentItems ||
+    prevdNextItems !== props.nextItems
+  ) {
+    setCurrentItems(props.currentItems);
+    setNextItems(props.nextItems);
+    setRetires(initPitIns);
+    setPhase("remove");
   }
 
-  function setItemHeight(name: string, height: number) {
-    const index = shrinkItems.findIndex((i) => i.name === name);
-    const updated = [...shrinkItems];
-
-    if (index < shrinkItems.length) {
-      updated[index].height = height;
-    } else {
-      // supposedly this shouldn't happen....
+  //--------------------------------------------
+  // Setters and getters on the `pitIns` state
+  //--------------------------------------------
+  function setRemoveDone(name: string) {
+    const index = pitIns.findIndex((i) => i.name === name);
+    if (index === -1 || index >= pitIns.length) {
+      const itemNames = "[" + pitIns.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+      );
     }
 
-    setShrinkItems(updated);
-  }
+    // set insert status as `done`
+    const updated = [...pitIns];
+    updated[index].doneRemove = true;
+    setRetires(updated);
 
-  function getItemHeight(name: string) {
-    const item = shrinkItems.find((i) => i.name === name);
-    return item ? item.height : 0;
+    // if everything is done
+    const doneItems = updated.filter((i) => i.doneRemove);
+    if (doneItems.length === pitIns.length) {
+      setPhase("insert");
+    }
   }
 
   function setInsertDone(name: string) {
-    const index = insertItems.findIndex((i) => i.name === name);
-    const updated = [...insertItems];
-
-    if (index < insertItems.length) {
-      console.log("RankingPitIn setInsertDone", index, name, insertItems);
-      updated[index].done = true;
-    } else {
-      // supposedly this shouldn't happen....
+    const index = pitIns.findIndex((i) => i.name === name);
+    if (index === -1 || index >= pitIns.length) {
+      const itemNames = "[" + pitIns.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+      );
     }
 
-    setInsertItems(updated);
+    // set insert status as `done`
+    const updated = [...pitIns];
+    updated[index].doneInsert = true;
+    setRetires(updated);
+
+    // if everything is done
+    const doneItems = updated.filter((i) => i.doneInsert);
+    if (doneItems.length === pitIns.length) {
+      setPhase("done");
+
+      if (props.onAnimationDone) {
+        props.onAnimationDone();
+      }
+    }
   }
 
-  switch (phase) {
-    case "pre":
-      return (
-        <div className={styles.rankingList}>
-          {items.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
-          ))}
-        </div>
+  function setItemHeight(name: string, height: number) {
+    const index = pitIns.findIndex((i) => i.name === name);
+    if (index === -1 || index >= pitIns.length) {
+      const itemNames = "[" + pitIns.map((i) => i.name).join(", ") + "]";
+      throw new Error(
+        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
       );
-    case "shrink":
+    }
+
+    const updated = [...pitIns];
+    updated[index].height = height;
+    setRetires(updated);
+  }
+
+  function getItemHeight(name: string) {
+    const item = pitIns.find((i) => i.name === name);
+    if (!item) {
+      const itemNames = "[" + pitIns.map((i) => i.name).join(", ") + "]";
+      throw new Error(`name = ${name} not found in ${itemNames}`);
+    }
+
+    return item.height;
+  }
+
+  //--------------------------------------------
+  // Switched rendering
+  //--------------------------------------------
+
+  switch (phase) {
+    case "remove":
+      const items = fromRetirementPhase(props.currentItems, props.nextItems);
+
       return (
         <div className={styles.rankingList}>
           {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
+            x.pitIn ? (
               <RemovePitInItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
-                onAnimationDone={() => setShrinkDone(x.name)}
+                onAnimationDone={() => setRemoveDone(x.name)}
               >
-                <RankingItemNormal key={x.name} {...x} />
+                <RankingItemNormal {...x} />
               </RemovePitInItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
@@ -181,13 +158,16 @@ function RankingPitInListing(props: Props) {
           )}
         </div>
       );
-    case "insert":
+    case "insert": {
+      const sortedItems = movePitInItemsToBottom(
+        props.currentItems,
+        props.nextItems
+      );
+
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
-            x.retired ? (
-              <RetiredItem key={x.name} {...x} />
-            ) : x.pitIn ? (
+          {sortedItems.map((x) =>
+            x.pitIn ? (
               <InsertItem
                 key={x.name}
                 height={getItemHeight(x.name)}
@@ -203,22 +183,21 @@ function RankingPitInListing(props: Props) {
           )}
         </div>
       );
-    case "callback":
+    }
+    case "done": {
+      const sortedItems = moveRetiredItemsToBottom(
+        props.currentItems,
+        props.nextItems
+      );
+
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => (
+          {sortedItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
       );
-    case "done":
-      return (
-        <div className={styles.rankingList}>
-          {items.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
-          ))}
-        </div>
-      );
+    }
     default:
       const _exhaustiveCheck: never = phase;
       return _exhaustiveCheck;
