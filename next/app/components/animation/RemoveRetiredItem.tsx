@@ -7,7 +7,7 @@ type Props = {
   onAnimationDone?: () => void;
 };
 
-type AnimationPhase = "calc height" | "animation ready" | "animating" | "done";
+type AnimationPhase = "calc height" | "show cover" | "shrink" | "done";
 
 export function RemoveRetiredItem(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -35,60 +35,41 @@ export function RemoveRetiredItem(props: Props) {
       if (onHeightCalculated) {
         onHeightCalculated(height);
       }
-      setPhase("animation ready");
+      setPhase("show cover");
     }
   }, [height, onHeightCalculated, phase]);
-
-  // Necessary useEffect, to use setTimeout
-  useEffect(() => {
-    if (phase === "animation ready") {
-      // without setTimeout, the height doesn't animate but immediately becomes 0
-      const timeoutId = setTimeout(async () => {
-        setPhase("animating");
-      }, 10);
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-  }, [phase, height, onHeightCalculated, onAnimationDone]);
-
-  function onTransitionEnd() {
-    if (onAnimationDone) {
-      onAnimationDone();
-    }
-    setPhase("done");
-  }
 
   switch (phase) {
     case "calc height":
       return (
-        <div
-          ref={ref}
-          className={styles.component}
-          onTransitionEnd={onTransitionEnd}
-        >
+        <div ref={ref} className={styles.component}>
           {props.children}
         </div>
       );
-    case "animation ready":
+    case "show cover":
       return (
-        <div
-          style={{ height: height }}
-          className={styles.component}
-          onTransitionEnd={onTransitionEnd}
-        >
+        <div style={{ height: height }} className={styles.component}>
           {props.children}
+          <div
+            className={styles.cover + " " + styles.appear}
+            onAnimationEnd={() => setPhase("shrink")}
+          >
+            RETIRED
+          </div>
         </div>
       );
-    case "animating":
+    case "shrink":
       return (
         <div
-          style={{ height: 0 }}
+          style={{
+            // Important in the previous phase to set the height non-zero,
+            // then set the height to 0 in this phase
+            height: 0,
+          }}
           className={styles.component}
-          onTransitionEnd={onTransitionEnd}
         >
           {props.children}
-          <div className={styles.covering}>RETIRED</div>
+          <div className={styles.cover + " " + styles.opacity09}>RETIRED</div>
         </div>
       );
     case "done":
@@ -96,7 +77,12 @@ export function RemoveRetiredItem(props: Props) {
         <div
           style={{ height: 0 }}
           className={styles.component}
-          onTransitionEnd={onTransitionEnd}
+          onTransitionEnd={() => {
+            if (onAnimationDone) {
+              onAnimationDone();
+            }
+            setPhase("done");
+          }}
         >
           {props.children}
         </div>
