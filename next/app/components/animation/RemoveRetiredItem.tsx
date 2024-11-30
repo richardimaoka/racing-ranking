@@ -84,7 +84,6 @@ export function RemoveRetiredItem(props: Props) {
           }}
           className={styles.component}
           onTransitionEnd={() => {
-            console.log("on transition endddd!!!!");
             if (onAnimationDone) {
               onAnimationDone();
             }

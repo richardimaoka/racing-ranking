@@ -57,7 +57,7 @@
     transform: translateX(0px);
   }
   100% {
-    transform: translateX(-120%);
+    transform: translateX(-100%);
   }
 }
 
@@ -67,6 +67,6 @@
 
 .slideOut > * {
   animation-name: slideOut;
-  animation-duration: 0.3s;
+  animation-duration: 0.5s;
   animation-fill-mode: forwards;
 }
