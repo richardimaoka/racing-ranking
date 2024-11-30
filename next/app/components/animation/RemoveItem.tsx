@@ -39,27 +39,16 @@ export function RemoveItem(props: Props) {
     }
   }, [height, onHeightCalculated, phase]);
 
+  // Necessary useEffect, to avoid the following error
   useEffect(() => {
-    switch (phase) {
-      case "calc height":
-        return;
-      case "animation ready":
-        // without setTimeout, the height doesn't animate but immediately becomes 0
-        const timeoutId = setTimeout(async () => {
-          setPhase("animating");
-        }, 10);
-        return () => {
-          clearTimeout(timeoutId);
-        };
-      case "animating":
-        // do nothing - phase change will be done by onTransitionEnd event handler
-        return;
-      case "done":
-        // do nothing
-        return;
-      default:
-        const _exhaustiveCheck: never = phase;
-        return _exhaustiveCheck;
+    if (phase === "animation ready") {
+      // without setTimeout, the height doesn't animate but immediately becomes 0
+      const timeoutId = setTimeout(async () => {
+        setPhase("animating");
+      }, 10);
+      return () => {
+        clearTimeout(timeoutId);
+      };
     }
   }, [phase, height, onHeightCalculated, onAnimationDone]);
 
