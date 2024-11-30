@@ -7,11 +7,7 @@ type Props = {
   onAnimationDone?: () => void;
 };
 
-type AnimationPhase =
-  | "calc height"
-  | "ready" //     trigger animation with setTimeout - without setTimeout, the height doesn't animate but immediately becomes 0
-  | "animating" // animation starts
-  | "done"; //     done everything
+type AnimationPhase = "calc height" | "animation ready" | "animating" | "done";
 
 export function RemoveItem(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -39,7 +35,7 @@ export function RemoveItem(props: Props) {
       if (onHeightCalculated) {
         onHeightCalculated(height);
       }
-      setPhase("ready");
+      setPhase("animation ready");
     }
   }, [height, onHeightCalculated, phase]);
 
@@ -47,7 +43,7 @@ export function RemoveItem(props: Props) {
     switch (phase) {
       case "calc height":
         return;
-      case "ready":
+      case "animation ready":
         // without setTimeout, the height doesn't animate but immediately becomes 0
         const timeoutId = setTimeout(async () => {
           setPhase("animating");
@@ -58,7 +54,6 @@ export function RemoveItem(props: Props) {
       case "animating":
         // do nothing - phase change will be done by onTransitionEnd event handler
         return;
-
       case "done":
         // do nothing
         return;
@@ -79,7 +74,7 @@ export function RemoveItem(props: Props) {
     switch (phase) {
       case "calc height":
         return undefined;
-      case "ready":
+      case "animation ready":
         return { height: height };
       case "animating":
         return { height: 0 };
