@@ -11,6 +11,7 @@ import {
   augmentRetirementInfo,
   moveRetiredItemsToBottom,
 } from "./rankingRetirementListing";
+import { RemoveRetiredItem } from "../animation/RemoveRetiredItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -144,13 +145,13 @@ function RankingRetirementListing(props: Props) {
         <div className={styles.rankingList}>
           {augmentedItems.map((x) =>
             x.retired ? (
-              <RemoveItem
+              <RemoveRetiredItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setRemoveDone(x.name)}
               >
                 <RankingItemNormal {...x} />
-              </RemoveItem>
+              </RemoveRetiredItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
             )
