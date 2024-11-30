@@ -28,13 +28,11 @@ export function RemoveRetiredItem(props: Props) {
     }
   }, []);
 
-  const onHeightCalculated = props.onHeightCalculated;
-  const onAnimationDone = props.onAnimationDone;
-
   // Necessary useEffect, to avoid the following error
   // Error: Cannot update a component while rendering a different component.
   //        To locate the bad setState() call inside this component, follow the stack trace as described in
   //        https://react.dev/link/setstate-in-render
+  const onHeightCalculated = props.onHeightCalculated;
   useEffect(() => {
     if (phase === "calc height" && height !== 0) {
       if (onHeightCalculated) {
@@ -84,8 +82,8 @@ export function RemoveRetiredItem(props: Props) {
           }}
           className={styles.component}
           onTransitionEnd={() => {
-            if (onAnimationDone) {
-              onAnimationDone();
+            if (props.onAnimationDone) {
+              props.onAnimationDone();
             }
             setPhase("done");
           }}
