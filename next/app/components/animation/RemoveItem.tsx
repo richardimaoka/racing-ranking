@@ -39,7 +39,7 @@ export function RemoveItem(props: Props) {
     }
   }, [height, onHeightCalculated, phase]);
 
-  // Necessary useEffect, to avoid the following error
+  // Necessary useEffect, to use setTimeout
   useEffect(() => {
     if (phase === "animation ready") {
       // without setTimeout, the height doesn't animate but immediately becomes 0
@@ -59,30 +59,49 @@ export function RemoveItem(props: Props) {
     setPhase("done");
   }
 
-  function calcStyle() {
-    switch (phase) {
-      case "calc height":
-        return undefined;
-      case "animation ready":
-        return { height: height };
-      case "animating":
-        return { height: 0 };
-      case "done":
-        return { height: 0 };
-      default:
-        const _exhaustiveCheck: never = phase;
-        return _exhaustiveCheck;
-    }
+  switch (phase) {
+    case "calc height":
+      return (
+        <div
+          ref={ref}
+          className={styles.component}
+          onTransitionEnd={onTransitionEnd}
+        >
+          {props.children}
+        </div>
+      );
+    case "animation ready":
+      return (
+        <div
+          style={{ height: height }}
+          className={styles.component}
+          onTransitionEnd={onTransitionEnd}
+        >
+          {props.children}
+        </div>
+      );
+    case "animating":
+      return (
+        <div
+          style={{ height: 0 }}
+          className={styles.component}
+          onTransitionEnd={onTransitionEnd}
+        >
+          {props.children}
+        </div>
+      );
+    case "done":
+      return (
+        <div
+          style={{ height: 0 }}
+          className={styles.component}
+          onTransitionEnd={onTransitionEnd}
+        >
+          {props.children}
+        </div>
+      );
+    default:
+      const _exhaustiveCheck: never = phase;
+      return _exhaustiveCheck;
   }
-
-  return (
-    <div
-      ref={ref}
-      style={calcStyle()}
-      className={styles.component}
-      onTransitionEnd={onTransitionEnd}
-    >
-      {props.children}
-    </div>
-  );
 }
