@@ -8,7 +8,7 @@ type Props = {
 };
 
 type AnimationPhase =
-  | "pre" //       calculate the height
+  | "calc height"
   | "ready" //     trigger animation with setTimeout - without setTimeout, the height doesn't animate but immediately becomes 0
   | "animating" // animation starts
   | "done"; //     done everything
@@ -16,7 +16,7 @@ type AnimationPhase =
 export function RemoveItem(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
-  const [phase, setPhase] = useState<AnimationPhase>("pre");
+  const [phase, setPhase] = useState<AnimationPhase>("calc height");
 
   // Necessary useEffect, because ref is set only after the initial rendering.
   useEffect(() => {
@@ -35,7 +35,7 @@ export function RemoveItem(props: Props) {
   //        To locate the bad setState() call inside this component, follow the stack trace as described in
   //        https://react.dev/link/setstate-in-render
   useEffect(() => {
-    if (phase === "pre" && height !== 0) {
+    if (phase === "calc height" && height !== 0) {
       if (onHeightCalculated) {
         onHeightCalculated(height);
       }
@@ -45,7 +45,7 @@ export function RemoveItem(props: Props) {
 
   useEffect(() => {
     switch (phase) {
-      case "pre":
+      case "calc height":
         return;
       case "ready":
         // without setTimeout, the height doesn't animate but immediately becomes 0
@@ -77,7 +77,7 @@ export function RemoveItem(props: Props) {
 
   function calcStyle() {
     switch (phase) {
-      case "pre":
+      case "calc height":
         return undefined;
       case "ready":
         return { height: height };
