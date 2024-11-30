@@ -12,6 +12,7 @@ import { PitInItem } from "../item/PitInItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { RankingItemProps } from "../item/RankingItem";
+import { RemovePitInItem } from "../animation/RemovePitInItem";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -167,13 +168,13 @@ function RankingPitInListing(props: Props) {
             x.retired ? (
               <RetiredItem key={x.name} {...x} />
             ) : x.pitIn ? (
-              <RemoveItem
+              <RemovePitInItem
                 key={x.name}
                 onHeightCalculated={(height) => setItemHeight(x.name, height)}
                 onAnimationDone={() => setShrinkDone(x.name)}
               >
                 <RankingItemNormal key={x.name} {...x} />
-              </RemoveItem>
+              </RemovePitInItem>
             ) : (
               <RankingItemStatic key={x.name} {...x} />
             )
