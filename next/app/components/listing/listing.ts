@@ -1,5 +1,9 @@
 import { RankingItemProps } from "../item/RankingItem";
 
+//----------------------------------------------------
+// augment functions
+//----------------------------------------------------
+
 export function augmentRetirementInfo(
   items: RankingItemProps[],
   nextItems: RankingItemProps[]
@@ -45,6 +49,45 @@ export function augmentShuffleInfo(
   });
 }
 
+function augmentFastestInfo(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  return currentItems.map((c) => {
+    const next = nextItems.find((n) => n.name === c.name);
+    return {
+      ...c,
+      retired: next?.retired,
+      pitIn: next?.pitIn,
+      fastest: next?.fastest,
+    };
+  });
+}
+
+function augmentUpdateInfo(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  return currentItems.map((c) => {
+    const next = nextItems.find((n) => n.name === c.name);
+    return {
+      ...c,
+      retired: next?.retired,
+      pitIn: next?.pitIn,
+      next: next
+        ? {
+            ranking: next.ranking,
+            interval: next.interval,
+          }
+        : undefined,
+    };
+  });
+}
+
+//----------------------------------------------------
+// sort functions
+//----------------------------------------------------
+
 export function movePitInItemsToBottom(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
@@ -77,6 +120,10 @@ export function moveRetiredItemsToBottom(
   return nonRetiredItems.concat(retiredItems);
 }
 
+//----------------------------------------------------
+// phase-skip judgement
+//----------------------------------------------------
+
 export function skipRetirementPhase(nextItems: RankingItemProps[]): boolean {
   return nextItems.findIndex((i) => i.retired) === -1;
 }
@@ -85,30 +132,10 @@ export function skipPitInPhase(nextItems: RankingItemProps[]): boolean {
   return nextItems.findIndex((i) => i.pitIn) === -1;
 }
 
-export function fromRetirementPhase(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  const items = moveRetiredItemsToBottom(currentItems, nextItems);
-  return augmentPitInInfo(items, nextItems);
-}
-
-export function afterShuffle(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  return nextItems.map((n) => {
-    const current = currentItems.find((c) => c.name === n.name);
-    return {
-      ...n,
-      interval: current?.interval,
-    };
-  });
-}
-
 //----------------------------------------------------
 // Phase-specific init/done items
 //----------------------------------------------------
+
 export function initItemsForRetirement(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
@@ -170,12 +197,14 @@ export function initItemsForValueChange(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return doneItemsForShuffle(currentItems, nextItems);
+  const items = doneItemsForPitIn(currentItems, nextItems);
+  return augmentFastestInfo(items, nextItems);
 }
 
 export function doneItemsForValueChange(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return moveRetiredItemsToBottom(currentItems, nextItems);
+  const items = initItemsForValueChange(currentItems, nextItems);
+  return augmentUpdateInfo(items, nextItems);
 }

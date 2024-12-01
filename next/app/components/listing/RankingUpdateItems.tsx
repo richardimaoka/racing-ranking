@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { RankingItemProps } from "../item/RankingItem";
-import { PanelHeader } from "../PanelHeader";
-import { augmentFastestInfo, augmentUpdateInfo } from "./rankingUpdateItems";
-import { UpdateItem } from "../item/UpdateItem";
-import { RankingItemStatic } from "../item/RankingItemStatic";
-import styles from "./RankingUpdateItems.module.css";
 import { FastestItem } from "../animation/FastestItem";
+import { RankingItemProps } from "../item/RankingItem";
+import { RankingItemStatic } from "../item/RankingItemStatic";
+import { UpdateItem } from "../item/UpdateItem";
+import { PanelHeader } from "../PanelHeader";
+import { doneItemsForValueChange, initItemsForValueChange } from "./listing";
+import styles from "./RankingUpdateItems.module.css";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -67,14 +67,15 @@ function RankingUpdateItemsListing(props: Props) {
   //--------------------------------------------
   // Switched rendering
   //--------------------------------------------
-  const fastestItems = augmentFastestInfo(props.currentItems, props.nextItems);
-  const updatedItems = augmentUpdateInfo(props.currentItems, props.nextItems);
-
   switch (phase) {
     case "fastest": {
+      const items = initItemsForValueChange(
+        props.currentItems,
+        props.nextItems
+      );
       return (
         <div className={styles.rankingList}>
-          {fastestItems.map((x) => {
+          {items.map((x) => {
             if (x.fastest) {
               return (
                 <FastestItem key={x.name}>
@@ -88,10 +89,15 @@ function RankingUpdateItemsListing(props: Props) {
         </div>
       );
     }
-    case "update":
+    case "update": {
+      const items = doneItemsForValueChange(
+        props.currentItems,
+        props.nextItems
+      );
+
       return (
         <div className={styles.rankingList}>
-          {updatedItems.map((x) => {
+          {items.map((x) => {
             const rankingChanged = x.ranking !== x.next?.ranking;
             const intervalChanged = x.interval !== x.next?.interval;
 
@@ -117,10 +123,16 @@ function RankingUpdateItemsListing(props: Props) {
           })}
         </div>
       );
+    }
     case "done": {
+      const items = doneItemsForValueChange(
+        props.currentItems,
+        props.nextItems
+      );
+
       return (
         <div className={styles.rankingList}>
-          {updatedItems.map((x) => (
+          {items.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
