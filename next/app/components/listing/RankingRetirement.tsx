@@ -11,6 +11,7 @@ import {
   moveRetiredItemsToBottom,
 } from "./rankingRetirementListing";
 import { RemoveRetiredItem } from "../animation/RemoveRetiredItem";
+import { initItemsForRetirement } from "./listing";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -135,14 +136,14 @@ function RankingRetirementListing(props: Props) {
   //--------------------------------------------
   switch (phase) {
     case "remove":
-      const augmentedItems = augmentRetirementInfo(
+      const initItems = initItemsForRetirement(
         props.currentItems,
         props.nextItems
       );
 
       return (
         <div className={styles.rankingList}>
-          {augmentedItems.map((x) =>
+          {initItems.map((x) =>
             x.retired ? (
               <RemoveRetiredItem
                 key={x.name}
@@ -184,14 +185,13 @@ function RankingRetirementListing(props: Props) {
       );
     }
     case "done": {
-      const sortedItems = moveRetiredItemsToBottom(
+      const doneItems = initItemsForRetirement(
         props.currentItems,
         props.nextItems
       );
-
       return (
         <div className={styles.rankingList}>
-          {sortedItems.map((x) => (
+          {doneItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
