@@ -5,10 +5,9 @@ import { RankingItemProps } from "./item/RankingItem";
 import { RankingRetirement } from "./listing/RankingRetirement";
 import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";
-import { skipPitInPhase } from "./listing/rankingPitInListing";
 import { RankingShuffle } from "./listing/RankingShuffle";
 import { RankingUpdateItems } from "./listing/RankingUpdateItems";
-import { skipRetirementPhase } from "./listing/listing";
+import { skipPitInPhase, skipRetirementPhase } from "./listing/listing";
 
 interface Props {
   initialItems: RankingItemProps[];

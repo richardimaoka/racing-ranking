@@ -127,14 +127,15 @@ export function initItemsForPitIn(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return doneItemsForRetirement(currentItems, nextItems);
+  const items = doneItemsForRetirement(currentItems, nextItems);
+  return augmentPitInInfo(items, nextItems);
 }
 
 export function doneItemsForPitIn(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return moveRetiredItemsToBottom(currentItems, nextItems);
+  return movePitInItemsToBottom(currentItems, nextItems);
 }
 
 // export function pitOutPhaseInitItems(

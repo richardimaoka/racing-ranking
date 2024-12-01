@@ -6,11 +6,12 @@ import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
-import {
-  fromRetirementPhase,
-  movePitInItemsToBottom,
-} from "./rankingPitInListing";
 import styles from "./RankingRetirement.module.css";
+import {
+  doneItemsForPitIn,
+  initItemsForPitIn,
+  movePitInItemsToBottom,
+} from "./listing";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -137,9 +138,8 @@ function RankingPitInListing(props: Props) {
   //--------------------------------------------
 
   switch (phase) {
-    case "remove":
-      const items = fromRetirementPhase(props.currentItems, props.nextItems);
-
+    case "remove": {
+      const items = initItemsForPitIn(props.currentItems, props.nextItems);
       return (
         <div className={styles.rankingList}>
           {items.map((x) =>
@@ -157,15 +157,13 @@ function RankingPitInListing(props: Props) {
           )}
         </div>
       );
+    }
     case "insert": {
-      const sortedItems = movePitInItemsToBottom(
-        props.currentItems,
-        props.nextItems
-      );
+      const items = movePitInItemsToBottom(props.currentItems, props.nextItems);
 
       return (
         <div className={styles.rankingList}>
-          {sortedItems.map((x) =>
+          {items.map((x) =>
             x.pitIn ? (
               <InsertItem
                 key={x.name}
@@ -184,14 +182,11 @@ function RankingPitInListing(props: Props) {
       );
     }
     case "done": {
-      const sortedItems = movePitInItemsToBottom(
-        props.currentItems,
-        props.nextItems
-      );
+      const items = doneItemsForPitIn(props.currentItems, props.nextItems);
 
       return (
         <div className={styles.rankingList}>
-          {sortedItems.map((x) => (
+          {items.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>

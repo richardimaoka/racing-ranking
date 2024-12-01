@@ -1,5 +1,5 @@
 import { RankingItemProps } from "../item/RankingItem";
-import { movePitInItemsToBottom } from "./rankingPitInListing";
+import { movePitInItemsToBottom } from "./listing";
 
 export function augmentFastestInfo(
   currentItems: RankingItemProps[],
