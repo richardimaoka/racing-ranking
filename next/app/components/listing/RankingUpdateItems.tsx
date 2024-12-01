@@ -75,21 +75,25 @@ function RankingUpdateItemsListing(props: Props) {
             const rankingChanged = x.ranking !== x.next?.ranking;
             const intervalChanged = x.interval !== x.next?.interval;
 
-            return rankingChanged || intervalChanged ? (
-              <UpdateItem
-                key={x.name}
-                team={x.team}
-                teamIconPath={x.teamIconPath}
-                name={x.name}
-                currentRanking={x.ranking}
-                nextRanking={x.next?.ranking}
-                currentInterval={x.interval}
-                nextInterval={x.next?.interval}
-                onAnimationDone={() => setUpdateDone(x.name)}
-              />
-            ) : (
-              <RankingItemStatic key={x.name} {...x} />
-            );
+            if (x.retired || x.pitIn) {
+              return <RankingItemStatic key={x.name} {...x} />;
+            } else if (rankingChanged || intervalChanged) {
+              return (
+                <UpdateItem
+                  key={x.name}
+                  team={x.team}
+                  teamIconPath={x.teamIconPath}
+                  name={x.name}
+                  currentRanking={x.ranking}
+                  nextRanking={x.next?.ranking}
+                  currentInterval={x.interval}
+                  nextInterval={x.next?.interval}
+                  onAnimationDone={() => setUpdateDone(x.name)}
+                />
+              );
+            } else {
+              return <RankingItemStatic key={x.name} {...x} />;
+            }
           })}
         </div>
       );

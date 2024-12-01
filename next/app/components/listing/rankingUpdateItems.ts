@@ -11,6 +11,8 @@ export function augmentUpdateInfo(
     const next = nextItems.find((n) => n.name === item.name);
     return {
       ...item,
+      retired: next?.retired,
+      pitIn: next?.pitIn,
       next: next
         ? {
             ranking: next.ranking,
