@@ -3,7 +3,8 @@
     "ranking": 1,
     "name": "S. Austin",
     "team": "H",
-    "teamIconPath": "/images/H.png"
+    "teamIconPath": "/images/H.png",
+    "fastest": true
   },
   {
     "ranking": 2,

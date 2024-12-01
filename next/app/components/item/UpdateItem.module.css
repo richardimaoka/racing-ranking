@@ -1,0 +1,104 @@
+.component {
+  display: grid;
+  grid-template-columns: 2rem 24px 1fr auto;
+  align-items: center;
+
+  column-gap: 8px;
+
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  /* for transition */
+  position: relative;
+  transition: 0.5s transform;
+
+  color: rgb(156, 156, 156);
+}
+
+.ranking {
+  justify-self: end;
+}
+
+.icon {
+  justify-self: end;
+}
+
+.name {
+  justify-self: start;
+}
+
+.interval {
+  justify-self: end;
+  font-weight: 500;
+}
+
+.highlight {
+  display: grid;
+  grid-template-areas: "center";
+
+  /* to set z-index in children */
+  position: relative;
+}
+
+.highlight > * {
+  grid-area: center;
+}
+
+.bg {
+  animation-name: bg;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+
+  /* to hide the text, set it transparent */
+  color: rgba(0, 0, 0, 0);
+
+  background-color: yellow;
+
+  /* position center with respect to the parent grid container... */
+  align-self: center;
+  justify-self: center;
+  /* ...then position: absolute to avoid affecting the size calculation of parent grid container */
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+
+  z-index: 1;
+}
+
+@keyframes stroke {
+  from {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+.stroke {
+  animation-name: stroke;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+
+  /* to hide the text, set it transparent */
+  color: rgba(0, 0, 0, 0);
+
+  border-color: yellow;
+  border-style: solid;
+  border-width: 1px;
+  opacity: 0;
+
+  /* position center with respect to the parent grid container... */
+  align-self: center;
+  justify-self: center;
+  /* ...then position: absolute to avoid affecting the size calculation of parent grid container */
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+
+  /* sent back with respect to content */
+  z-index: 1;
+}

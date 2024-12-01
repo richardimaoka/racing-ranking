@@ -11,7 +11,6 @@ import {
   movePitInItemsToBottom,
 } from "./rankingPitInListing";
 import styles from "./RankingRetirement.module.css";
-import { moveRetiredItemsToBottom } from "./rankingRetirementListing";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -185,7 +184,7 @@ function RankingPitInListing(props: Props) {
       );
     }
     case "done": {
-      const sortedItems = moveRetiredItemsToBottom(
+      const sortedItems = movePitInItemsToBottom(
         props.currentItems,
         props.nextItems
       );
