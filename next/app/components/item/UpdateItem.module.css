@@ -46,6 +46,18 @@
   grid-area: center;
 }
 
+@keyframes bg {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .bg {
   animation-name: bg;
   animation-duration: 1s;
@@ -92,8 +104,8 @@
   opacity: 0;
 
   /* position center with respect to the parent grid container... */
-  align-self: center;
-  justify-self: center;
+  align-self: stretch;
+  justify-self: stretch;
   /* ...then position: absolute to avoid affecting the size calculation of parent grid container */
   position: absolute;
   width: 2rem;
@@ -101,4 +113,8 @@
 
   /* sent back with respect to content */
   z-index: 1;
+}
+
+.front {
+  z-index: 2;
 }

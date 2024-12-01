@@ -74,12 +74,6 @@ function RankingUpdateItemsListing(props: Props) {
           {augmentedItems.map((x) => {
             const rankingChanged = x.ranking !== x.next?.ranking;
             const intervalChanged = x.interval !== x.next?.interval;
-            console.log(
-              "RankingUpdateItems",
-              x.name,
-              `rank from:${x.ranking} to:${x.next?.ranking}`,
-              `interval from:${x.interval}, to${x.next?.interval}`
-            );
 
             return rankingChanged || intervalChanged ? (
               <UpdateItem
