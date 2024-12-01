@@ -1,4 +1,76 @@
 .component {
-  transition: height 0.5s;
-  overflow-y: hidden;
+  display: grid;
+  grid-template-areas: "center";
+
+  overflow-x: hidden;
+
+  /* For the children to set z-index*/
+  position: relative;
+}
+
+.component > * {
+  grid-area: center;
+}
+
+.component > :nth-child(1) {
+  z-index: 1;
+}
+
+.cover {
+  z-index: 2;
+
+  /* stretch up to the parent */
+  align-self: stretch;
+  justify-self: stretch;
+
+  /* centering the contents */
+  display: grid;
+  align-items: center;
+  justify-items: center;
+
+  background-color: #ed2626;
+  color: rgb(255, 255, 255);
+  font-weight: 900;
+
+  /* .appear animation will override this*/
+  opacity: 0.9;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0.5;
+    transform: translateX(-100%);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.appear {
+  animation-name: appear;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes slowSlide {
+  0% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+.slowSlide {
+  animation-name: slowSlide;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
 }

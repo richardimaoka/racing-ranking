@@ -27,7 +27,7 @@ export function FastestItem(props: Props) {
               setPhase("done");
             }}
           >
-            FASTEST
+            <span className={styles.slowSlide}>FASTEST 1:32.608</span>
           </div>
         </div>
       );

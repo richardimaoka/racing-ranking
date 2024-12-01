@@ -17,6 +17,7 @@ interface Props {
   };
   retired?: boolean;
   pitIn?: boolean;
+  fastest?: string;
 }
 
 export type RankingItemProps = Props;
