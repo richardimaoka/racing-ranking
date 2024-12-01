@@ -45,40 +45,18 @@ export function RankingPanelState(props: Props) {
   console.log("RankingPanelState", phase, items);
 
   useEffect(() => {
-    switch (phase) {
-      case "fetch":
-        // Fetch the next data
-        const timeoutId = setTimeout(async () => {
-          const updatedItems = await updateItems(count);
-          setNextItems(updatedItems);
-          setCount(incrementCount(count));
-          setPhase("retire");
-        }, 1000);
+    if (phase === "fetch") {
+      // Fetch the next data
+      const timeoutId = setTimeout(async () => {
+        const updatedItems = await updateItems(count);
+        setNextItems(updatedItems);
+        setCount(incrementCount(count));
+        setPhase("retire");
+      }, 1000);
 
-        return () => {
-          clearTimeout(timeoutId);
-        };
-      case "retire":
-        if (skipRetirementPhase(nextItems)) {
-          setPhase("pit in");
-        }
-        break;
-      case "pit in":
-        if (skipPitInPhase(nextItems)) {
-          setPhase("value change");
-        }
-        break;
-      case "shuffle":
-        // if (skipPitInPhase(nextItems)) {
-        //   setPhase("value change");
-        // }
-        break;
-      case "value change":
-        break;
-      default:
-        //https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
-        const _exhaustiveCheck: never = phase;
-        return _exhaustiveCheck;
+      return () => {
+        clearTimeout(timeoutId);
+      };
     }
   }, [count, items, nextItems, phase]);
 
@@ -86,6 +64,13 @@ export function RankingPanelState(props: Props) {
     case "fetch":
       return <RankingPanelLayout items={items} />;
     case "retire":
+      if (skipRetirementPhase(nextItems)) {
+        // https://react.dev/reference/react/useState
+        //   Calling the set function during rendering is only allowed from within the currently rendering component.
+        //   React will discard its output and immediately attempt to render it again with the new state.
+        setPhase("pit in");
+      }
+
       return (
         <RankingRetirement
           currentItems={items}
@@ -96,6 +81,13 @@ export function RankingPanelState(props: Props) {
         />
       );
     case "pit in":
+      if (skipPitInPhase(nextItems)) {
+        // https://react.dev/reference/react/useState
+        //   Calling the set function during rendering is only allowed from within the currently rendering component.
+        //   React will discard its output and immediately attempt to render it again with the new state.
+        setPhase("value change");
+      }
+
       return (
         <RankingPitIn
           currentItems={items}
