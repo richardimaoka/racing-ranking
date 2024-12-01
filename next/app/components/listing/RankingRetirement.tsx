@@ -6,12 +6,8 @@ import { RankingItemStatic } from "../item/RankingItemStatic";
 import { RetiredItem } from "../item/RetiredItem";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./RankingRetirement.module.css";
-import {
-  augmentRetirementInfo,
-  moveRetiredItemsToBottom,
-} from "./rankingRetirementListing";
 import { RemoveRetiredItem } from "../animation/RemoveRetiredItem";
-import { initItemsForRetirement } from "./listing";
+import { initItemsForRetirement, moveRetiredItemsToBottom } from "./listing";
 
 interface Props {
   currentItems: RankingItemProps[];

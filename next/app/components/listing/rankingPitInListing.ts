@@ -1,8 +1,5 @@
 import { RankingItemProps } from "../item/RankingItem";
-import {
-  augmentRetirementInfo,
-  moveRetiredItemsToBottom,
-} from "./rankingRetirementListing";
+import { augmentRetirementInfo, moveRetiredItemsToBottom } from "./listing";
 
 function augmentPitInInfo(
   items: RankingItemProps[],
