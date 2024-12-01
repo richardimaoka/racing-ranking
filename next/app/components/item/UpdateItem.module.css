@@ -68,13 +68,12 @@
 
   background-color: yellow;
 
-  /* position center with respect to the parent grid container... */
-  align-self: center;
-  justify-self: center;
-  /* ...then position: absolute to avoid affecting the size calculation of parent grid container */
+  /* fill to the parent container size */
+  align-self: stretch;
+  justify-self: stretch;
+
+  /* absolute positioning so that it doesn't affect parent container's sizing */
   position: absolute;
-  width: 2rem;
-  height: 2rem;
 
   z-index: 1;
 }
@@ -103,13 +102,12 @@
   border-width: 1px;
   opacity: 0;
 
-  /* position center with respect to the parent grid container... */
+  /* fill to the parent container size */
   align-self: stretch;
   justify-self: stretch;
-  /* ...then position: absolute to avoid affecting the size calculation of parent grid container */
+
+  /* absolute positioning so that it doesn't affect parent container's sizing */
   position: absolute;
-  width: 2rem;
-  height: 2rem;
 
   /* sent back with respect to content */
   z-index: 1;

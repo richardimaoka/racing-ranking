@@ -77,8 +77,12 @@ export function UpdateItem(props: Props) {
           setDoneRankingAnimation(true);
         }}
       >
-        <span className={styles.stroke}>{props.nextRanking}</span>
-        <span className={styles.bg}>{props.nextRanking}</span>
+        {highlightRanking && (
+          <span className={styles.stroke}>{props.nextRanking}</span>
+        )}
+        {highlightRanking && (
+          <span className={styles.bg}>{props.nextRanking}</span>
+        )}
         <span className={styles.front}>{props.nextRanking}</span>
       </div>
       <Image
@@ -101,8 +105,8 @@ export function UpdateItem(props: Props) {
             setDoneIntervalAnimation(true);
           }}
         >
-          <span className={styles.stroke}>LEADER</span>
-          <span className={styles.bg}>LEADER</span>
+          {highlightInterval && <span className={styles.stroke}>LEADER</span>}
+          {highlightInterval && <span className={styles.bg}>LEADER</span>}
           <span className={styles.front}>LEADER</span>
         </div>
       ) : (
@@ -117,12 +121,16 @@ export function UpdateItem(props: Props) {
             setDoneIntervalAnimation(true);
           }}
         >
-          <span className={styles.stroke}>
-            {interval(props.currentInterval, props.nextInterval)}
-          </span>
-          <span className={styles.bg}>
-            {interval(props.currentInterval, props.nextInterval)}
-          </span>
+          {highlightInterval && (
+            <span className={styles.stroke}>
+              {interval(props.currentInterval, props.nextInterval)}
+            </span>
+          )}
+          {highlightInterval && (
+            <span className={styles.bg}>
+              {interval(props.currentInterval, props.nextInterval)}
+            </span>
+          )}
           <span className={styles.front}>
             {interval(props.currentInterval, props.nextInterval)}
           </span>
