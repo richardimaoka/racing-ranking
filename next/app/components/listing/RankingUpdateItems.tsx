@@ -71,22 +71,32 @@ function RankingUpdateItemsListing(props: Props) {
     case "update":
       return (
         <div className={styles.rankingList}>
-          {augmentedItems.map((x) =>
-            x.next ? (
+          {augmentedItems.map((x) => {
+            const rankingChanged = x.ranking !== x.next?.ranking;
+            const intervalChanged = x.interval !== x.next?.interval;
+            console.log(
+              "RankingUpdateItems",
+              x.name,
+              `rank from:${x.ranking} to:${x.next?.ranking}`,
+              `interval from:${x.interval}, to${x.next?.interval}`
+            );
+
+            return rankingChanged || intervalChanged ? (
               <UpdateItem
-                currentRanking={x.ranking}
-                nextRanking={x.next.ranking}
-                currentInterval={0}
                 key={x.name}
-                onAnimationDone={() => setUpdateDone(x.name)}
                 team={x.team}
                 teamIconPath={x.teamIconPath}
                 name={x.name}
+                currentRanking={x.ranking}
+                nextRanking={x.next?.ranking}
+                currentInterval={x.interval}
+                nextInterval={x.next?.interval}
+                onAnimationDone={() => setUpdateDone(x.name)}
               />
             ) : (
               <RankingItemStatic key={x.name} {...x} />
-            )
-          )}
+            );
+          })}
         </div>
       );
     case "done": {

@@ -43,7 +43,7 @@ export function RankingPanelState(props: Props) {
   const [nextItems, setNextItems] = useState([]);
 
   console.log("RankingPanelState", phase, items);
-  
+
   useEffect(() => {
     switch (phase) {
       case "fetch":
@@ -65,7 +65,7 @@ export function RankingPanelState(props: Props) {
         break;
       case "pit in":
         if (skipPitInPhase(nextItems)) {
-          setPhase("shuffle");
+          setPhase("value change");
         }
         break;
       case "shuffle":
@@ -101,7 +101,7 @@ export function RankingPanelState(props: Props) {
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {
-            setPhase("shuffle");
+            setPhase("value change");
           }}
         />
       );

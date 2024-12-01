@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./RankingItemNormal.module.css";
+import styles from "./UpdateItem.module.css";
 import { Roboto_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
 
@@ -7,9 +7,9 @@ interface Props {
   team: string;
   teamIconPath: string;
   currentRanking: number;
-  nextRanking: number;
+  nextRanking?: number;
   name: string;
-  currentInterval: number;
+  currentInterval?: number;
   nextInterval?: number;
   onAnimationDone?: () => void;
 }
@@ -90,7 +90,7 @@ export function UpdateItem(props: Props) {
       {props.nextRanking === 1 ? (
         <div
           className={
-            styles.ranking +
+            styles.interval +
             " " +
             robotoMono.className +
             (highlightInterval ? " " + styles.highlight : "")
@@ -104,7 +104,7 @@ export function UpdateItem(props: Props) {
       ) : (
         <div
           className={
-            styles.ranking +
+            styles.interval +
             " " +
             robotoMono.className +
             (highlightInterval ? " " + styles.highlight : "")
@@ -113,7 +113,7 @@ export function UpdateItem(props: Props) {
             setDoneIntervalAnimation(true);
           }}
         >
-          {interval(props.nextInterval, props.currentInterval)}
+          {interval(props.currentInterval, props.nextInterval)}
         </div>
       )}
     </div>
