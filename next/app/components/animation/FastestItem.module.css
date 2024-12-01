@@ -31,6 +31,7 @@
   background-color: #ed2626;
   color: rgb(255, 255, 255);
   font-weight: 900;
+  font-size: 1.2rem;
 
   /* .appear animation will override this*/
   opacity: 0.9;

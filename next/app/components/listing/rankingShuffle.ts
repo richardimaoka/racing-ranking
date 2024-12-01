@@ -1,11 +1,11 @@
 import { RankingItemProps } from "../item/RankingItem";
-import { updateRanking } from "./rankingUpdateRanking";
+import { movePitInItemsToBottom } from "./rankingPitInListing";
 
 export function augmentShuffleInfo(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  const items = updateRanking(currentItems, nextItems);
+  const items = movePitInItemsToBottom(currentItems, nextItems);
 
   return items.map((item) => {
     const next = nextItems.find((n) => n.name === item.name);
