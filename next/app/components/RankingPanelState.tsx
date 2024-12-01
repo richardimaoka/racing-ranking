@@ -5,7 +5,6 @@ import { RankingItemProps } from "./item/RankingItem";
 import { RankingRetirement } from "./listing/RankingRetirement";
 import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";
-import { RankingUpdateRanking } from "./listing/RankingUpdateRanking";
 import { skipRetirementPhase } from "./listing/rankingRetirementListing";
 import { skipPitInPhase } from "./listing/rankingPitInListing";
 import { RankingShuffle } from "./listing/RankingShuffle";
@@ -29,15 +28,13 @@ async function updateItems(count: number) {
   return nextItems;
 }
 
-type AnimationPhase = "fetch" | "retire" | "pit in" | "rank update" | "shuffle";
+type AnimationPhase = "fetch" | "retire" | "pit in" | "shuffle";
 
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
   const [phase, setPhase] = useState<AnimationPhase>("fetch");
   const [items] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
-
-  console.log("RankingPanelState", phase, items);
 
   useEffect(() => {
     switch (phase) {
@@ -60,11 +57,8 @@ export function RankingPanelState(props: Props) {
         break;
       case "pit in":
         if (skipPitInPhase(nextItems)) {
-          setPhase("rank update");
+          setPhase("shuffle");
         }
-        break;
-      case "rank update":
-        // do nothing - phase change to "pit in" is done by callback
         break;
       case "shuffle":
         // do nothing - phase change to "pit in" is done by callback
@@ -92,16 +86,6 @@ export function RankingPanelState(props: Props) {
     case "pit in":
       return (
         <RankingPitIn
-          currentItems={items}
-          nextItems={nextItems}
-          onAnimationDone={() => {
-            setPhase("rank update");
-          }}
-        />
-      );
-    case "rank update":
-      return (
-        <RankingUpdateRanking
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
 import { RemovePitInItem } from "../animation/RemovePitInItem";
+import { PitInItem } from "../item/PitInItem";
 import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
@@ -11,7 +12,6 @@ import {
 } from "./rankingPitInListing";
 import styles from "./RankingRetirement.module.css";
 import { moveRetiredItemsToBottom } from "./rankingRetirementListing";
-import { PitInItem } from "../item/PitInItem";
 
 interface Props {
   currentItems: RankingItemProps[];
