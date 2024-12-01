@@ -7,7 +7,11 @@ import { RankingPanelLayout } from "./RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";
 import { RankingShuffle } from "./listing/RankingShuffle";
 import { RankingUpdateItems } from "./listing/RankingUpdateItems";
-import { skipPitInPhase, skipRetirementPhase } from "./listing/listing";
+import {
+  skipPitInPhase,
+  skipRetirementPhase,
+  skipShufflePhase,
+} from "./listing/listing";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -84,7 +88,7 @@ export function RankingPanelState(props: Props) {
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
-        setPhase("value change");
+        setPhase("shuffle");
       }
 
       return (
@@ -92,17 +96,24 @@ export function RankingPanelState(props: Props) {
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {
-            setPhase("value change");
+            setPhase("shuffle");
           }}
         />
       );
     case "shuffle":
+      if (skipShufflePhase(items, nextItems)) {
+        // https://react.dev/reference/react/useState
+        //   Calling the set function during rendering is only allowed from within the currently rendering component.
+        //   React will discard its output and immediately attempt to render it again with the new state.
+        setPhase("value change");
+      }
+
       return (
         <RankingShuffle
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {
-            // setPhase("rank update");
+            setPhase("value change");
           }}
         />
       );

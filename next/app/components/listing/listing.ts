@@ -34,12 +34,10 @@ export function augmentShuffleInfo(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  const items = movePitInItemsToBottom(currentItems, nextItems);
-
-  return items.map((item) => {
-    const next = nextItems.find((n) => n.name === item.name);
+  return currentItems.map((current) => {
+    const next = nextItems.find((n) => n.name === current.name);
     return {
-      ...item,
+      ...current,
       next: next
         ? {
             ranking: next.ranking,
@@ -132,6 +130,22 @@ export function skipPitInPhase(nextItems: RankingItemProps[]): boolean {
   return nextItems.findIndex((i) => i.pitIn) === -1;
 }
 
+export function skipShufflePhase(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): boolean {
+  for (let index = 0; index < currentItems.length; index++) {
+    const current = currentItems[index];
+    const next = nextItems.find((n) => n.name === current.name);
+
+    if (next && current.ranking !== next?.ranking) {
+      return false; // rank changed, don't skip
+    }
+  }
+
+  return true;
+}
+
 //----------------------------------------------------
 // Phase-specific init/done items
 //----------------------------------------------------
@@ -183,21 +197,26 @@ export function initItemsForShuffle(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return doneItemsForPitIn(currentItems, nextItems);
+  const prevItems = doneItemsForPitIn(currentItems, nextItems);
+  return augmentShuffleInfo(prevItems, nextItems);
 }
 
 export function doneItemsForShuffle(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  return moveRetiredItemsToBottom(currentItems, nextItems);
+  const items = initItemsForShuffle(currentItems, nextItems);
+  return nextItems.map((next) => {
+    const current = items.find((i) => i.name === next.name);
+    return current ? current : next;
+  });
 }
 
 export function initItemsForValueChange(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  const items = doneItemsForPitIn(currentItems, nextItems);
+  const items = doneItemsForShuffle(currentItems, nextItems);
   return augmentFastestInfo(items, nextItems);
 }
 
