@@ -8,6 +8,7 @@ import { RankingPitIn } from "./listing/RankingPitIn";
 import { skipRetirementPhase } from "./listing/rankingRetirementListing";
 import { skipPitInPhase } from "./listing/rankingPitInListing";
 import { RankingShuffle } from "./listing/RankingShuffle";
+import { RankingUpdateItems } from "./listing/RankingUpdateItems";
 
 interface Props {
   initialItems: RankingItemProps[];
@@ -28,7 +29,12 @@ async function updateItems(count: number) {
   return nextItems;
 }
 
-type AnimationPhase = "fetch" | "retire" | "pit in" | "shuffle";
+type AnimationPhase =
+  | "fetch"
+  | "retire"
+  | "pit in"
+  | "shuffle"
+  | "value change";
 
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
@@ -36,6 +42,8 @@ export function RankingPanelState(props: Props) {
   const [items] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
+  console.log("RankingPanelState", phase, items);
+  
   useEffect(() => {
     switch (phase) {
       case "fetch":
@@ -61,7 +69,11 @@ export function RankingPanelState(props: Props) {
         }
         break;
       case "shuffle":
-        // do nothing - phase change to "pit in" is done by callback
+        // if (skipPitInPhase(nextItems)) {
+        //   setPhase("value change");
+        // }
+        break;
+      case "value change":
         break;
       default:
         //https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
@@ -96,6 +108,16 @@ export function RankingPanelState(props: Props) {
     case "shuffle":
       return (
         <RankingShuffle
+          currentItems={items}
+          nextItems={nextItems}
+          onAnimationDone={() => {
+            // setPhase("rank update");
+          }}
+        />
+      );
+    case "value change":
+      return (
+        <RankingUpdateItems
           currentItems={items}
           nextItems={nextItems}
           onAnimationDone={() => {
