@@ -14,7 +14,7 @@ import styles from "./Listing.module.css";
 type Props = {
   currentItems: RankingItemProps[];
   nextItems: RankingItemProps[];
-  onAnimationDone?: () => void;
+  onAnimationDone?: (items: RankingItemProps[]) => void;
 };
 
 type AnimationState = {
@@ -92,7 +92,7 @@ function RankingShuffleListing(props: Props) {
       setPhase("done");
 
       if (props.onAnimationDone) {
-        props.onAnimationDone();
+        props.onAnimationDone(donePhaseItems);
       }
     }
   }

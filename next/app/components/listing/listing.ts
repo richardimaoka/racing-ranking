@@ -47,7 +47,7 @@ export function augmentShuffleInfo(
   });
 }
 
-function augmentFastestInfo(
+export function augmentFastestInfo(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
@@ -62,7 +62,7 @@ function augmentFastestInfo(
   });
 }
 
-function augmentUpdateInfo(
+export function augmentUpdateInfo(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
@@ -179,31 +179,4 @@ export function initItemsForShuffle(
 ): RankingItemProps[] {
   const prevItems = doneItemsForPitIn(currentItems, nextItems);
   return augmentShuffleInfo(prevItems, nextItems);
-}
-
-export function doneItemsForShuffle(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  const items = initItemsForShuffle(currentItems, nextItems);
-  return nextItems.map((next) => {
-    const current = items.find((i) => i.name === next.name);
-    return current ? current : next;
-  });
-}
-
-export function initItemsForValueChange(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  const items = doneItemsForShuffle(currentItems, nextItems);
-  return augmentFastestInfo(items, nextItems);
-}
-
-export function doneItemsForValueChange(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  const items = initItemsForValueChange(currentItems, nextItems);
-  return augmentUpdateInfo(items, nextItems);
 }

@@ -114,7 +114,8 @@ export function RankingPanelState(props: Props) {
         <RankingShuffle
           currentItems={currentItems}
           nextItems={nextItems}
-          onAnimationDone={() => {
+          onAnimationDone={(items) => {
+            setCurrentItems(items);
             setPhase("value change");
           }}
         />
