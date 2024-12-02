@@ -42,10 +42,10 @@ type AnimationPhase =
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
   const [phase, setPhase] = useState<AnimationPhase>("fetch");
-  const [items, setItems] = useState(props.initialItems);
+  const [currentItems, setCurrentItems] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
-  console.log("RankingPanelState", phase, items);
+  console.log("RankingPanelState", phase, currentItems);
 
   useEffect(() => {
     if (phase === "fetch") {
@@ -61,11 +61,11 @@ export function RankingPanelState(props: Props) {
         clearTimeout(timeoutId);
       };
     }
-  }, [count, items, nextItems, phase]);
+  }, [count, currentItems, nextItems, phase]);
 
   switch (phase) {
     case "fetch":
-      return <RankingPanelLayout items={items} />;
+      return <RankingPanelLayout items={currentItems} />;
     case "retire":
       if (skipRetirementPhase(nextItems)) {
         // https://react.dev/reference/react/useState
@@ -76,7 +76,7 @@ export function RankingPanelState(props: Props) {
 
       return (
         <RankingRetirement
-          currentItems={items}
+          currentItems={currentItems}
           nextItems={nextItems}
           onAnimationDone={() => {
             setPhase("pit in");
@@ -93,7 +93,7 @@ export function RankingPanelState(props: Props) {
 
       return (
         <RankingPitIn
-          currentItems={items}
+          currentItems={currentItems}
           nextItems={nextItems}
           onAnimationDone={() => {
             setPhase("shuffle");
@@ -101,7 +101,7 @@ export function RankingPanelState(props: Props) {
         />
       );
     case "shuffle":
-      if (skipShufflePhase(items, nextItems)) {
+      if (skipShufflePhase(currentItems, nextItems)) {
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
@@ -110,7 +110,7 @@ export function RankingPanelState(props: Props) {
 
       return (
         <RankingShuffle
-          currentItems={items}
+          currentItems={currentItems}
           nextItems={nextItems}
           onAnimationDone={() => {
             setPhase("value change");
@@ -120,10 +120,10 @@ export function RankingPanelState(props: Props) {
     case "value change":
       return (
         <RankingUpdateItems
-          currentItems={items}
+          currentItems={currentItems}
           nextItems={nextItems}
           onAnimationDone={(items) => {
-            setItems(items);
+            setCurrentItems(items);
             // setPhase("rank update");
           }}
         />
