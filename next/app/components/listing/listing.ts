@@ -90,8 +90,11 @@ export function movePitInItemsToBottom(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
-  // preserve the current sort order
-  const augmentedItems = augmentPitInInfo(currentItems, nextItems);
+  // preserve the current sort order, and augment the info (re-doing augment is just fine)
+  const augmentedItems = augmentPitInInfo(
+    augmentRetirementInfo(currentItems, nextItems),
+    nextItems
+  );
 
   const pitInItems = augmentedItems.filter((n) => n.pitIn);
   const retiredItems = augmentedItems.filter((n) => n.retired);
