@@ -42,7 +42,7 @@ type AnimationPhase =
 export function RankingPanelState(props: Props) {
   const [count, setCount] = useState(2); //2 = next count
   const [phase, setPhase] = useState<AnimationPhase>("fetch");
-  const [items] = useState(props.initialItems);
+  const [items, setItems] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
   console.log("RankingPanelState", phase, items);
@@ -122,7 +122,8 @@ export function RankingPanelState(props: Props) {
         <RankingUpdateItems
           currentItems={items}
           nextItems={nextItems}
-          onAnimationDone={() => {
+          onAnimationDone={(items) => {
+            setItems(items);
             // setPhase("rank update");
           }}
         />
