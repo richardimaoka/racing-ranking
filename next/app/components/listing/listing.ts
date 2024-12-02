@@ -153,30 +153,9 @@ export function skipShufflePhase(
     const nextIndex = nextItems.findIndex((n) => n.name === current.name);
 
     if (currentIndex !== nextIndex) {
-      console.log("skipShufflePhase return false");
       return false; // rank changed, don't skip
     }
   }
 
-  console.log("skipShufflePhase return true");
   return true;
-}
-
-//----------------------------------------------------
-// Phase-specific init/done items
-//----------------------------------------------------
-
-export function doneItemsForPitIn(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  return movePitInItemsToBottom(currentItems, nextItems);
-}
-
-export function initItemsForShuffle(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  const prevItems = doneItemsForPitIn(currentItems, nextItems);
-  return augmentShuffleInfo(prevItems, nextItems);
 }

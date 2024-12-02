@@ -4,11 +4,7 @@ import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
-import {
-  augmentShuffleInfo,
-  initItemsForShuffle,
-  matchToNextItemsSortOrder,
-} from "./listing";
+import { augmentShuffleInfo, matchToNextItemsSortOrder } from "./listing";
 import styles from "./Listing.module.css";
 
 type Props = {
@@ -26,8 +22,7 @@ function extractShuffleItems(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): AnimationState[] {
-  const items = initItemsForShuffle(currentItems, nextItems);
-  const augmentedItems = augmentShuffleInfo(items, nextItems);
+  const augmentedItems = augmentShuffleInfo(currentItems, nextItems);
   return augmentedItems
     .filter((item, index) => {
       const currentRank = index + 1;
