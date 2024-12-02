@@ -61,6 +61,22 @@ function RankingPitInListing(props: Props) {
   }
 
   //--------------------------------------------
+  // Items calculation logic
+  //--------------------------------------------
+
+  const removePhaseItems = initItemsForPitIn(
+    props.currentItems,
+    props.nextItems
+  );
+
+  const insertPhaseItems = movePitInItemsToBottom(
+    props.currentItems,
+    props.nextItems
+  );
+
+  const donePhaseItems = doneItemsForPitIn(props.currentItems, props.nextItems);
+
+  //--------------------------------------------
   // Setters and getters on the `pitIns` state
   //--------------------------------------------
   function setRemoveDone(name: string) {
@@ -139,10 +155,9 @@ function RankingPitInListing(props: Props) {
 
   switch (phase) {
     case "remove": {
-      const items = initItemsForPitIn(props.currentItems, props.nextItems);
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
+          {removePhaseItems.map((x) =>
             x.pitIn ? (
               <RemovePitInItem
                 key={x.name}
@@ -159,11 +174,9 @@ function RankingPitInListing(props: Props) {
       );
     }
     case "insert": {
-      const items = movePitInItemsToBottom(props.currentItems, props.nextItems);
-
       return (
         <div className={styles.rankingList}>
-          {items.map((x) =>
+          {insertPhaseItems.map((x) =>
             x.pitIn ? (
               <InsertItem
                 key={x.name}
@@ -182,11 +195,9 @@ function RankingPitInListing(props: Props) {
       );
     }
     case "done": {
-      const items = doneItemsForPitIn(props.currentItems, props.nextItems);
-
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => (
+          {donePhaseItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>

@@ -55,7 +55,7 @@ function RankingRetirementListing(props: Props) {
   }
 
   //--------------------------------------------
-  // Setters and getters on the `retires` state
+  // Items calculation logic
   //--------------------------------------------
   const removePhaseItems = initItemsForRetirement(
     props.currentItems,
