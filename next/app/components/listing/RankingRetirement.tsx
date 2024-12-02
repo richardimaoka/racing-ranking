@@ -12,7 +12,7 @@ import { initItemsForRetirement, moveRetiredItemsToBottom } from "./listing";
 interface Props {
   currentItems: RankingItemProps[];
   nextItems: RankingItemProps[];
-  onAnimationDone?: () => void;
+  onAnimationDone?: (items: RankingItemProps[]) => void;
 }
 
 type AnimationState = {
@@ -53,6 +53,22 @@ function RankingRetirementListing(props: Props) {
     setRetires(initRetires);
     setPhase("remove");
   }
+
+  //--------------------------------------------
+  // Setters and getters on the `retires` state
+  //--------------------------------------------
+  const removePhaseItems = initItemsForRetirement(
+    props.currentItems,
+    props.nextItems
+  );
+  const insertPhaseItems = moveRetiredItemsToBottom(
+    props.currentItems,
+    props.nextItems
+  );
+  const donePhaseItems = moveRetiredItemsToBottom(
+    props.currentItems,
+    props.nextItems
+  );
 
   //--------------------------------------------
   // Setters and getters on the `retires` state
@@ -98,7 +114,7 @@ function RankingRetirementListing(props: Props) {
       setPhase("done");
 
       if (props.onAnimationDone) {
-        props.onAnimationDone();
+        props.onAnimationDone(donePhaseItems);
       }
     }
   }
@@ -132,14 +148,9 @@ function RankingRetirementListing(props: Props) {
   //--------------------------------------------
   switch (phase) {
     case "remove":
-      const initItems = initItemsForRetirement(
-        props.currentItems,
-        props.nextItems
-      );
-
       return (
         <div className={styles.rankingList}>
-          {initItems.map((x) =>
+          {removePhaseItems.map((x) =>
             x.retired ? (
               <RemoveRetiredItem
                 key={x.name}
@@ -155,14 +166,9 @@ function RankingRetirementListing(props: Props) {
         </div>
       );
     case "insert": {
-      const sortedItems = moveRetiredItemsToBottom(
-        props.currentItems,
-        props.nextItems
-      );
-
       return (
         <div className={styles.rankingList}>
-          {sortedItems.map((x) =>
+          {insertPhaseItems.map((x) =>
             x.retired ? (
               <InsertItem
                 key={x.name}
@@ -181,13 +187,9 @@ function RankingRetirementListing(props: Props) {
       );
     }
     case "done": {
-      const doneItems = initItemsForRetirement(
-        props.currentItems,
-        props.nextItems
-      );
       return (
         <div className={styles.rankingList}>
-          {doneItems.map((x) => (
+          {donePhaseItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
