@@ -12,17 +12,3 @@
   padding-top: 8px;
   padding-bottom: 8px;
 }
-
-.shrink {
-  animation-name: shrink;
-  animation-duration: 0.5s;
-}
-
-@keyframes shrink {
-  from {
-    transform: scaleY(1);
-  }
-  to {
-    transform: scaleY(0);
-  }
-}
