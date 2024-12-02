@@ -78,7 +78,8 @@ export function RankingPanelState(props: Props) {
         <RankingRetirement
           currentItems={currentItems}
           nextItems={nextItems}
-          onAnimationDone={() => {
+          onAnimationDone={(items) => {
+            setCurrentItems(items);
             setPhase("pit in");
           }}
         />

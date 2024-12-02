@@ -17,7 +17,7 @@ export function augmentRetirementInfo(
   });
 }
 
-function augmentPitInInfo(
+export function augmentPitInInfo(
   items: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
@@ -91,10 +91,7 @@ export function movePitInItemsToBottom(
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
   // preserve the current sort order
-  const augmentedItems = augmentPitInInfo(
-    augmentRetirementInfo(currentItems, nextItems),
-    nextItems
-  );
+  const augmentedItems = augmentPitInInfo(currentItems, nextItems);
 
   const pitInItems = augmentedItems.filter((n) => n.pitIn);
   const retiredItems = augmentedItems.filter((n) => n.retired);

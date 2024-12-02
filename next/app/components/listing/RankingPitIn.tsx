@@ -7,11 +7,7 @@ import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./Listing.module.css";
-import {
-  doneItemsForPitIn,
-  initItemsForPitIn,
-  movePitInItemsToBottom,
-} from "./listing";
+import { augmentPitInInfo, movePitInItemsToBottom } from "./listing";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -63,18 +59,15 @@ function RankingPitInListing(props: Props) {
   //--------------------------------------------
   // Items calculation logic
   //--------------------------------------------
-
-  const removePhaseItems = initItemsForPitIn(
+  const removePhaseItems = augmentPitInInfo(
     props.currentItems,
     props.nextItems
   );
-
   const insertPhaseItems = movePitInItemsToBottom(
-    props.currentItems,
+    removePhaseItems,
     props.nextItems
   );
-
-  const donePhaseItems = doneItemsForPitIn(props.currentItems, props.nextItems);
+  const donePhaseItems = insertPhaseItems;
 
   //--------------------------------------------
   // Setters and getters on the `pitIns` state
