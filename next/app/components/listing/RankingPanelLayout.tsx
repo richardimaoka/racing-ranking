@@ -1,5 +1,5 @@
-import { RankingItemProps } from "../item/RankingItem";
-import { RankingItemStatic } from "../item/RankingItemStatic";
+import { RankingItemProps } from "../item/itemProps";
+import { StaticItemSwitch } from "../item/StaticItemSwitch";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./Listing.module.css";
 
@@ -13,7 +13,7 @@ export function RankingPanelLayout(props: Props) {
       <PanelHeader />
       <div className={styles.rankingList}>
         {props.items.map((x) => (
-          <RankingItemStatic key={x.name} {...x} />
+          <StaticItemSwitch key={x.name} {...x} />
         ))}
       </div>
     </div>

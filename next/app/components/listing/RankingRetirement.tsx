@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
-import { RankingItemProps } from "../item/RankingItem";
-import { RankingItemNormal } from "../item/RankingItemNormal";
-import { RankingItemStatic } from "../item/RankingItemStatic";
-import { RetiredItem } from "../item/RetiredItem";
+import { RankingItemProps } from "../item/itemProps";
+import { RankingItemNormal } from "../item/StaticItemNormal";
+import { StaticItemSwitch } from "../item/StaticItemSwitch";
+import { RetiredItem } from "../item/StaticItemRetired";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./Listing.module.css";
 import { RemoveRetiredItem } from "../animation/RemoveRetiredItem";
@@ -160,7 +160,7 @@ function RankingRetirementListing(props: Props) {
                 <RankingItemNormal {...x} />
               </RemoveRetiredItem>
             ) : (
-              <RankingItemStatic key={x.name} {...x} />
+              <StaticItemSwitch key={x.name} {...x} />
             )
           )}
         </div>
@@ -180,7 +180,7 @@ function RankingRetirementListing(props: Props) {
                 <RetiredItem key={x.name} {...x} />
               </InsertItem>
             ) : (
-              <RankingItemStatic key={x.name} {...x} />
+              <StaticItemSwitch key={x.name} {...x} />
             )
           )}
         </div>
@@ -190,7 +190,7 @@ function RankingRetirementListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {donePhaseItems.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
+            <StaticItemSwitch key={x.name} {...x} />
           ))}
         </div>
       );

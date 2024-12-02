@@ -1,5 +1,3 @@
-// import { useEffect, useRef, useState } from "react";
-
 interface Props {
   team: string;
   teamIconPath: string;

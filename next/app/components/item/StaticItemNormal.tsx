@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./RankingItemNormal.module.css";
+import styles from "./StaticItemNormal.module.css";
 import { Roboto_Mono } from "next/font/google";
 
 interface Props {

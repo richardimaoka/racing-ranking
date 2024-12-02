@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./RetiredItem.module.css";
+import styles from "./StaticItemRetired.module.css";
 import { Roboto_Mono } from "next/font/google";
 
 interface Props {

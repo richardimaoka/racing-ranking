@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { InsertItem } from "../animation/InsertItem";
 import { RemovePitInItem } from "../animation/RemovePitInItem";
-import { PitInItem } from "../item/PitInItem";
-import { RankingItemProps } from "../item/RankingItem";
-import { RankingItemNormal } from "../item/RankingItemNormal";
-import { RankingItemStatic } from "../item/RankingItemStatic";
+import { PitInItem } from "../item/StaticItemPitIn";
+import { RankingItemProps } from "../item/itemProps";
+import { RankingItemNormal } from "../item/StaticItemNormal";
+import { StaticItemSwitch } from "../item/StaticItemSwitch";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./Listing.module.css";
 import { augmentPitInInfo, movePitInItemsToBottom } from "./listing";
@@ -158,7 +158,7 @@ function RankingPitInListing(props: Props) {
                 <RankingItemNormal {...x} />
               </RemovePitInItem>
             ) : (
-              <RankingItemStatic key={x.name} {...x} />
+              <StaticItemSwitch key={x.name} {...x} />
             )
           )}
         </div>
@@ -179,7 +179,7 @@ function RankingPitInListing(props: Props) {
                 <PitInItem key={x.name} {...x} />
               </InsertItem>
             ) : (
-              <RankingItemStatic key={x.name} {...x} />
+              <StaticItemSwitch key={x.name} {...x} />
             )
           )}
         </div>
@@ -189,7 +189,7 @@ function RankingPitInListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {donePhaseItems.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
+            <StaticItemSwitch key={x.name} {...x} />
           ))}
         </div>
       );

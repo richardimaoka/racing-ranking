@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RankingItemProps } from "./item/RankingItem";
+import { RankingItemProps } from "./item/itemProps";
 import { RankingRetirement } from "./listing/RankingRetirement";
 import { RankingPanelLayout } from "./listing/RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";

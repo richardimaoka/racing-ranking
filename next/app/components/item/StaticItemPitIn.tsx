@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./PitInItem.module.css";
+import styles from "./StaticItemPitIn.module.css";
 import { Roboto_Mono } from "next/font/google";
 
 interface Props {

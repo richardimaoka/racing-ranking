@@ -1,11 +1,11 @@
-import { PitInItem } from "./PitInItem";
-import { RankingItemProps } from "./RankingItem";
-import { RankingItemNormal } from "./RankingItemNormal";
-import { RetiredItem } from "./RetiredItem";
+import { PitInItem } from "./StaticItemPitIn";
+import { RankingItemProps } from "./itemProps";
+import { RankingItemNormal } from "./StaticItemNormal";
+import { RetiredItem } from "./StaticItemRetired";
 
 type Props = RankingItemProps;
 
-export function RankingItemStatic(props: Props): JSX.Element {
+export function StaticItemSwitch(props: Props): JSX.Element {
   if (props.retired) {
     return (
       <RetiredItem

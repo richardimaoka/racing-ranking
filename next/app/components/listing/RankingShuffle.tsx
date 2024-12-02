@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ShuffleItem as AnimationState } from "../animation/ShuffleItem";
-import { RankingItemProps } from "../item/RankingItem";
-import { RankingItemNormal } from "../item/RankingItemNormal";
-import { RankingItemStatic } from "../item/RankingItemStatic";
+import { RankingItemProps } from "../item/itemProps";
+import { RankingItemNormal } from "../item/StaticItemNormal";
+import { StaticItemSwitch } from "../item/StaticItemSwitch";
 import { PanelHeader } from "../PanelHeader";
 import { augmentShuffleInfo, matchToNextItemsSortOrder } from "./listing";
 import styles from "./Listing.module.css";
@@ -112,7 +112,7 @@ function RankingShuffleListing(props: Props) {
                 <RankingItemNormal key={x.name} {...x} />
               </AnimationState>
             ) : (
-              <RankingItemStatic key={x.name} {...x} />
+              <StaticItemSwitch key={x.name} {...x} />
             );
           })}
         </div>
@@ -121,7 +121,7 @@ function RankingShuffleListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {donePhaseItems.map((x) => {
-            return <RankingItemStatic key={x.name} {...x} />;
+            return <StaticItemSwitch key={x.name} {...x} />;
           })}
         </div>
       );

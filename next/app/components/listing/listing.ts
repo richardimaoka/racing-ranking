@@ -1,4 +1,4 @@
-import { RankingItemProps } from "../item/RankingItem";
+import { RankingItemProps } from "../item/itemProps";
 
 //----------------------------------------------------
 // augment functions

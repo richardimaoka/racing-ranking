@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FastestItem } from "../animation/FastestItem";
-import { RankingItemProps } from "../item/RankingItem";
-import { RankingItemStatic } from "../item/RankingItemStatic";
+import { RankingItemProps } from "../item/itemProps";
+import { StaticItemSwitch } from "../item/StaticItemSwitch";
 import { UpdateItem } from "../item/UpdateItem";
 import { PanelHeader } from "../PanelHeader";
 import { augmentFastestInfo, augmentUpdateInfo } from "./listing";
@@ -87,11 +87,11 @@ function RankingUpdateItemsListing(props: Props) {
             if (x.fastest) {
               return (
                 <FastestItem key={x.name}>
-                  <RankingItemStatic {...x} />
+                  <StaticItemSwitch {...x} />
                 </FastestItem>
               );
             } else {
-              return <RankingItemStatic key={x.name} {...x} />;
+              return <StaticItemSwitch key={x.name} {...x} />;
             }
           })}
         </div>
@@ -105,7 +105,7 @@ function RankingUpdateItemsListing(props: Props) {
             const intervalChanged = x.interval !== x.next?.interval;
 
             if (x.retired || x.pitIn) {
-              return <RankingItemStatic key={x.name} {...x} />;
+              return <StaticItemSwitch key={x.name} {...x} />;
             } else if (rankingChanged || intervalChanged) {
               return (
                 <UpdateItem
@@ -121,7 +121,7 @@ function RankingUpdateItemsListing(props: Props) {
                 />
               );
             } else {
-              return <RankingItemStatic key={x.name} {...x} />;
+              return <StaticItemSwitch key={x.name} {...x} />;
             }
           })}
         </div>
@@ -131,7 +131,7 @@ function RankingUpdateItemsListing(props: Props) {
       return (
         <div className={styles.rankingList}>
           {donePhaseItems.map((x) => (
-            <RankingItemStatic key={x.name} {...x} />
+            <StaticItemSwitch key={x.name} {...x} />
           ))}
         </div>
       );
