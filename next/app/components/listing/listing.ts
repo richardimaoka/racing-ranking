@@ -144,21 +144,21 @@ export function skipShufflePhase(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): boolean {
-  const items = doneItemsForPitIn(currentItems, nextItems);
-
   for (
     let currentIndex = 0;
     currentIndex < currentItems.length;
     currentIndex++
   ) {
-    const current = items[currentIndex];
+    const current = currentItems[currentIndex];
     const nextIndex = nextItems.findIndex((n) => n.name === current.name);
 
     if (currentIndex !== nextIndex) {
+      console.log("skipShufflePhase return false");
       return false; // rank changed, don't skip
     }
   }
 
+  console.log("skipShufflePhase return true");
   return true;
 }
 
@@ -166,48 +166,12 @@ export function skipShufflePhase(
 // Phase-specific init/done items
 //----------------------------------------------------
 
-export function initItemsForRetirement(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  return augmentRetirementInfo(currentItems, nextItems);
-}
-
-export function doneItemsForRetirement(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  return moveRetiredItemsToBottom(currentItems, nextItems);
-}
-
-export function initItemsForPitIn(
-  currentItems: RankingItemProps[],
-  nextItems: RankingItemProps[]
-): RankingItemProps[] {
-  const items = doneItemsForRetirement(currentItems, nextItems);
-  return augmentPitInInfo(items, nextItems);
-}
-
 export function doneItemsForPitIn(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): RankingItemProps[] {
   return movePitInItemsToBottom(currentItems, nextItems);
 }
-
-// export function pitOutPhaseInitItems(
-//   currentItems: RankingItemProps[],
-//   nextItems: RankingItemProps[]
-// ): RankingItemProps[] {
-//   return
-// }
-
-// export function pitOurPhaseDoneItems(
-//   currentItems: RankingItemProps[],
-//   nextItems: RankingItemProps[]
-// ): RankingItemProps[] {
-//   return
-// }
 
 export function initItemsForShuffle(
   currentItems: RankingItemProps[],

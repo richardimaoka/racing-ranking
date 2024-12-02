@@ -12,7 +12,7 @@ import { augmentPitInInfo, movePitInItemsToBottom } from "./listing";
 interface Props {
   currentItems: RankingItemProps[];
   nextItems: RankingItemProps[];
-  onAnimationDone?: () => void;
+  onAnimationDone?: (items: RankingItemProps[]) => void;
 }
 
 type AnimationState = {
@@ -111,7 +111,7 @@ function RankingPitInListing(props: Props) {
       setPhase("done");
 
       if (props.onAnimationDone) {
-        props.onAnimationDone();
+        props.onAnimationDone(donePhaseItems);
       }
     }
   }
