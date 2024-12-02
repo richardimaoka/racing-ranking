@@ -40,8 +40,6 @@ function RankingPitInListing(props: Props) {
   const [pitIns, setRetires] = useState<AnimationState[]>(initPitIns);
   const [phase, setPhase] = useState<AnimationPhase>("remove");
 
-  console.log("RankingPitIn", phase);
-
   // Upon props change, reset the state, otherwise React states are preserved through props change.
   // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);

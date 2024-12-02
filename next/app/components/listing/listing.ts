@@ -155,12 +155,6 @@ export function skipShufflePhase(
     const nextIndex = nextItems.findIndex((n) => n.name === current.name);
 
     if (currentIndex !== nextIndex) {
-      console.log(
-        "don't skip shuffle, current\n",
-        items.map((i) => i.name),
-        "next",
-        nextItems.map((i) => i.name)
-      );
       return false; // rank changed, don't skip
     }
   }
