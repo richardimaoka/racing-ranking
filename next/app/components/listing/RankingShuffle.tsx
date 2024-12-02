@@ -4,8 +4,11 @@ import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
-import { doneItemsForShuffle, initItemsForShuffle } from "./listing";
-import { augmentShuffleInfo } from "./rankingShuffle";
+import {
+  augmentShuffleInfo,
+  doneItemsForShuffle,
+  initItemsForShuffle,
+} from "./listing";
 import styles from "./RankingShuffle.module.css";
 
 type Props = {
@@ -39,6 +42,8 @@ function RankingShuffleListing(props: Props) {
   const initTargets = extractShuffleItems(props.currentItems, props.nextItems);
   const [targetItems, setTargetItems] = useState<AnimationState[]>(initTargets);
   const [phase, setPhase] = useState<AnimationPhase>("shuffle");
+
+  console.log("RankingShuffle", phase);
 
   // Upon props change, reset the state, otherwise React states are preserved through props change.
   // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
@@ -88,14 +93,18 @@ function RankingShuffleListing(props: Props) {
   const initItems = initItemsForShuffle(props.currentItems, props.nextItems);
   const doneItems = doneItemsForShuffle(props.currentItems, props.nextItems);
 
-  console.log("RankingShuffle", initItems, doneItems);
-
   switch (phase) {
     case "shuffle":
       return (
         <div className={styles.rankingList}>
           {initItems.map((x, index) => {
             const currentRank = index + 1;
+            console.log(
+              "RankingShuffle", x.name, "currentRank",
+              currentRank,
+              "nextRank",
+              x.next?.ranking
+            );
             return x.next && x.next.ranking !== currentRank ? (
               <AnimationState
                 key={x.name}

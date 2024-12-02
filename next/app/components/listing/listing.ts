@@ -134,11 +134,23 @@ export function skipShufflePhase(
   currentItems: RankingItemProps[],
   nextItems: RankingItemProps[]
 ): boolean {
-  for (let index = 0; index < currentItems.length; index++) {
-    const current = currentItems[index];
-    const next = nextItems.find((n) => n.name === current.name);
+  const items = doneItemsForPitIn(currentItems, nextItems);
 
-    if (next && current.ranking !== next?.ranking) {
+  for (
+    let currentIndex = 0;
+    currentIndex < currentItems.length;
+    currentIndex++
+  ) {
+    const current = items[currentIndex];
+    const nextIndex = nextItems.findIndex((n) => n.name === current.name);
+
+    if (currentIndex !== nextIndex) {
+      console.log(
+        "don't skip shuffle, current\n",
+        items.map((i) => i.name),
+        "next",
+        nextItems.map((i) => i.name)
+      );
       return false; // rank changed, don't skip
     }
   }
