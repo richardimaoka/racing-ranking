@@ -10,7 +10,7 @@ import styles from "./Listing.module.css";
 interface Props {
   currentItems: RankingItemProps[];
   nextItems: RankingItemProps[];
-  onAnimationDone?: () => void;
+  onAnimationDone?: (items: RankingItemProps[]) => void;
 }
 
 type AnimationState = {
@@ -37,30 +37,46 @@ type AnimationPhase = "fastest" | "update" | "done";
 
 function RankingUpdateItemsListing(props: Props) {
   const [phase, setPhase] = useState<AnimationPhase>("fastest");
-  const initUpdates = extractUpdates(props.nextItems);
-  const [updates, setUpdates] = useState<AnimationState[]>(initUpdates);
+  const initTargets = extractUpdates(props.nextItems);
+  const [targets, setTargets] = useState<AnimationState[]>(initTargets);
 
   //--------------------------------------------
-  // Setters and getters on the `retires` state
+  // Items for each phase
+  //--------------------------------------------
+  //TODO: use prop's init items
+  const itemsForFastest = initItemsForValueChange(
+    props.currentItems,
+    props.nextItems
+  );
+  const doneItems = doneItemsForValueChange(
+    props.currentItems,
+    props.nextItems
+  );
+
+  //--------------------------------------------
+  // Setters and getters on the `targets` state
   //--------------------------------------------
   function setUpdateDone(name: string) {
-    const index = updates.findIndex((i) => i.name === name);
-    if (index === -1 || index >= updates.length) {
-      const itemNames = "[" + updates.map((i) => i.name).join(", ") + "]";
+    const index = targets.findIndex((i) => i.name === name);
+    if (index === -1 || index >= targets.length) {
+      const targetNames = "[" + targets.map((i) => i.name).join(", ") + "]";
       throw new Error(
-        `name = ${name} not found in ${itemNames}. index = ${index} out of range`
+        `name = ${name} not found in ${targetNames}. index = ${index} out of range`
       );
     }
 
     // set status as `done`
-    const updated = [...updates];
-    updated[index].doneUpdate = true;
-    setUpdates(updated);
+    const updatedTargets = [...targets];
+    updatedTargets[index].doneUpdate = true;
+    setTargets(updatedTargets);
 
     // if everything is done
-    const doneItems = updated.filter((i) => i.doneUpdate);
-    if (doneItems.length === updates.length) {
+    const doneTargets = updatedTargets.filter((i) => i.doneUpdate);
+    if (doneTargets.length === targets.length) {
       setPhase("done");
+      if (props.onAnimationDone) {
+        props.onAnimationDone(doneItems);
+      }
     }
   }
 
@@ -69,13 +85,9 @@ function RankingUpdateItemsListing(props: Props) {
   //--------------------------------------------
   switch (phase) {
     case "fastest": {
-      const items = initItemsForValueChange(
-        props.currentItems,
-        props.nextItems
-      );
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => {
+          {itemsForFastest.map((x) => {
             if (x.fastest) {
               return (
                 <FastestItem key={x.name}>
@@ -90,14 +102,9 @@ function RankingUpdateItemsListing(props: Props) {
       );
     }
     case "update": {
-      const items = doneItemsForValueChange(
-        props.currentItems,
-        props.nextItems
-      );
-
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => {
+          {doneItems.map((x) => {
             const rankingChanged = x.ranking !== x.next?.ranking;
             const intervalChanged = x.interval !== x.next?.interval;
 
@@ -125,14 +132,9 @@ function RankingUpdateItemsListing(props: Props) {
       );
     }
     case "done": {
-      const items = doneItemsForValueChange(
-        props.currentItems,
-        props.nextItems
-      );
-
       return (
         <div className={styles.rankingList}>
-          {items.map((x) => (
+          {doneItems.map((x) => (
             <RankingItemStatic key={x.name} {...x} />
           ))}
         </div>
