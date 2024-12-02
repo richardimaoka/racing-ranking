@@ -6,7 +6,7 @@ import { RankingItemProps } from "../item/RankingItem";
 import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
-import styles from "./RankingRetirement.module.css";
+import styles from "./Listing.module.css";
 import {
   doneItemsForPitIn,
   initItemsForPitIn,

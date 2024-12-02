@@ -9,7 +9,7 @@ import {
   doneItemsForShuffle,
   initItemsForShuffle,
 } from "./listing";
-import styles from "./RankingShuffle.module.css";
+import styles from "./Listing.module.css";
 
 type Props = {
   currentItems: RankingItemProps[];

@@ -5,7 +5,7 @@ import { RankingItemStatic } from "../item/RankingItemStatic";
 import { UpdateItem } from "../item/UpdateItem";
 import { PanelHeader } from "../PanelHeader";
 import { doneItemsForValueChange, initItemsForValueChange } from "./listing";
-import styles from "./RankingUpdateItems.module.css";
+import styles from "./Listing.module.css";
 
 interface Props {
   currentItems: RankingItemProps[];

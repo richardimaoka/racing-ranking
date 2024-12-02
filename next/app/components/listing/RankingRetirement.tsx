@@ -5,7 +5,7 @@ import { RankingItemNormal } from "../item/RankingItemNormal";
 import { RankingItemStatic } from "../item/RankingItemStatic";
 import { RetiredItem } from "../item/RetiredItem";
 import { PanelHeader } from "../PanelHeader";
-import styles from "./RankingRetirement.module.css";
+import styles from "./Listing.module.css";
 import { RemoveRetiredItem } from "../animation/RemoveRetiredItem";
 import { initItemsForRetirement, moveRetiredItemsToBottom } from "./listing";
 
