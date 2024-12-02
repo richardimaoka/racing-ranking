@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { RankingItemProps } from "./item/RankingItem";
 import { RankingRetirement } from "./listing/RankingRetirement";
-import { RankingPanelLayout } from "./RankingPanelLayout";
+import { RankingPanelLayout } from "./listing/RankingPanelLayout";
 import { RankingPitIn } from "./listing/RankingPitIn";
 import { RankingShuffle } from "./listing/RankingShuffle";
 import { RankingUpdateItems } from "./listing/RankingUpdateItems";

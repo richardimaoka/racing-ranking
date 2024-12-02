@@ -1,7 +1,7 @@
-import { RankingItemProps } from "./item/RankingItem";
-import { RankingItemStatic } from "./item/RankingItemStatic";
-import { PanelHeader } from "./PanelHeader";
-import styles from "./RankingPanelLayout.module.css";
+import { RankingItemProps } from "../item/RankingItem";
+import { RankingItemStatic } from "../item/RankingItemStatic";
+import { PanelHeader } from "../PanelHeader";
+import styles from "./Listing.module.css";
 
 interface Props {
   items: RankingItemProps[];
