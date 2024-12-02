@@ -43,7 +43,7 @@ function RankingUpdateItemsListing(props: Props) {
   //--------------------------------------------
   // Items for each phase
   //--------------------------------------------
-  //TODO: use prop's init items
+  // TODO: use prop's init items
   const itemsForFastest = initItemsForValueChange(
     props.currentItems,
     props.nextItems

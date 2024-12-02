@@ -118,6 +118,16 @@ export function moveRetiredItemsToBottom(
   return nonRetiredItems.concat(retiredItems);
 }
 
+// match to nextItem's sort oder, but return the current items' element
+export function matchToNextItemsSortOrder(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): RankingItemProps[] {
+  return nextItems.map((next) => {
+    const current = currentItems.find((i) => i.name === next.name);
+    return current ? current : next;
+  });
+}
 //----------------------------------------------------
 // phase-skip judgement
 //----------------------------------------------------

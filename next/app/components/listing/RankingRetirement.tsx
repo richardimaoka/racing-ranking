@@ -7,7 +7,7 @@ import { RetiredItem } from "../item/RetiredItem";
 import { PanelHeader } from "../PanelHeader";
 import styles from "./Listing.module.css";
 import { RemoveRetiredItem } from "../animation/RemoveRetiredItem";
-import { initItemsForRetirement, moveRetiredItemsToBottom } from "./listing";
+import { augmentRetirementInfo, moveRetiredItemsToBottom } from "./listing";
 
 interface Props {
   currentItems: RankingItemProps[];
@@ -57,7 +57,7 @@ function RankingRetirementListing(props: Props) {
   //--------------------------------------------
   // Items calculation logic
   //--------------------------------------------
-  const removePhaseItems = initItemsForRetirement(
+  const removePhaseItems = augmentRetirementInfo(
     props.currentItems,
     props.nextItems
   );

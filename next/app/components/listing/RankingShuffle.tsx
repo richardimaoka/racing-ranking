@@ -6,8 +6,8 @@ import { RankingItemStatic } from "../item/RankingItemStatic";
 import { PanelHeader } from "../PanelHeader";
 import {
   augmentShuffleInfo,
-  doneItemsForShuffle,
   initItemsForShuffle,
+  matchToNextItemsSortOrder,
 } from "./listing";
 import styles from "./Listing.module.css";
 
@@ -43,8 +43,6 @@ function RankingShuffleListing(props: Props) {
   const [targetItems, setTargetItems] = useState<AnimationState[]>(initTargets);
   const [phase, setPhase] = useState<AnimationPhase>("shuffle");
 
-  console.log("RankingShuffle", phase);
-
   // Upon props change, reset the state, otherwise React states are preserved through props change.
   // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [prevCurrentItems, setCurrentItems] = useState(props.currentItems);
@@ -58,6 +56,18 @@ function RankingShuffleListing(props: Props) {
     setTargetItems(initTargets);
     setPhase("shuffle");
   }
+
+  //--------------------------------------------
+  // Items calculation logic
+  //--------------------------------------------
+  const shufflePhaseItems = augmentShuffleInfo(
+    props.currentItems,
+    props.nextItems
+  );
+  const donePhaseItems = matchToNextItemsSortOrder(
+    shufflePhaseItems,
+    props.nextItems
+  );
 
   //-----------------------------------------------
   // Setters and getters on the `targetItems` state
@@ -90,21 +100,12 @@ function RankingShuffleListing(props: Props) {
   //--------------------------------------------
   // Switched rendering
   //--------------------------------------------
-  const initItems = initItemsForShuffle(props.currentItems, props.nextItems);
-  const doneItems = doneItemsForShuffle(props.currentItems, props.nextItems);
-
   switch (phase) {
     case "shuffle":
       return (
         <div className={styles.rankingList}>
-          {initItems.map((x, index) => {
+          {shufflePhaseItems.map((x, index) => {
             const currentRank = index + 1;
-            console.log(
-              "RankingShuffle", x.name, "currentRank",
-              currentRank,
-              "nextRank",
-              x.next?.ranking
-            );
             return x.next && x.next.ranking !== currentRank ? (
               <AnimationState
                 key={x.name}
@@ -124,7 +125,7 @@ function RankingShuffleListing(props: Props) {
     case "done":
       return (
         <div className={styles.rankingList}>
-          {doneItems.map((x) => {
+          {donePhaseItems.map((x) => {
             return <RankingItemStatic key={x.name} {...x} />;
           })}
         </div>
