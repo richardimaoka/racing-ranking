@@ -71,6 +71,7 @@ export function RankingPanelState(props: Props) {
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
+        console.log("RankingPanelState skip the retirement phase");
         setPhase("pit in");
       }
 
@@ -89,6 +90,7 @@ export function RankingPanelState(props: Props) {
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
+        console.log("RankingPanelState skip the pit in phase");
         setPhase("shuffle");
       }
 
@@ -107,6 +109,7 @@ export function RankingPanelState(props: Props) {
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
+        console.log("RankingPanelState skip the shuffle phase");
         setPhase("value change");
       }
 

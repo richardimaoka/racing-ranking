@@ -19,6 +19,11 @@ type AnimationState = {
   doneUpdate: boolean;
 };
 
+function skipFastest(items: RankingItemProps[]): boolean {
+  const fastestItem = items.find((i) => i.fastest);
+  return fastestItem === undefined;
+}
+
 function extractUpdates(items: RankingItemProps[]): AnimationState[] {
   return items
     .filter((i) => {
@@ -81,12 +86,19 @@ function RankingUpdateItemsListing(props: Props) {
   //--------------------------------------------
   switch (phase) {
     case "fastest": {
+      if (skipFastest(fastestPhaseItems)) {
+        setPhase("update");
+      }
+
       return (
         <div className={styles.rankingList}>
           {fastestPhaseItems.map((x) => {
             if (x.fastest) {
               return (
-                <FastestItem key={x.name}>
+                <FastestItem
+                  key={x.name}
+                  onAnimationDone={() => setPhase("update")}
+                >
                   <StaticItemSwitch {...x} />
                 </FastestItem>
               );
