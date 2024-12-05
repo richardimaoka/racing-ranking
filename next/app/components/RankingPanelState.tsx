@@ -48,7 +48,7 @@ export function RankingPanelState(props: Props) {
   console.log("RankingPanelState", phase, currentItems);
 
   useEffect(() => {
-    if (phase === "fetch") {
+    if (phase === "fetch" && count <= 3) {
       // Fetch the next data
       const timeoutId = setTimeout(async () => {
         const updatedItems = await updateItems(count);
@@ -130,7 +130,7 @@ export function RankingPanelState(props: Props) {
           nextItems={nextItems}
           onAnimationDone={(items) => {
             setCurrentItems(items);
-            // setPhase("rank update");
+            setPhase("fetch");
           }}
         />
       );

@@ -34,9 +34,12 @@ function interval(
   return " ";
 }
 
+type AnimationPhase = "highlight" | "done";
+
 export function UpdateItem(props: Props) {
   const highlightRanking = props.currentRanking !== props.nextRanking;
   const highlightInterval = props.currentInterval !== props.nextInterval;
+  const [phase, setPhase] = useState("highlight");
 
   const [doneRankingAnimation, setDoneRankingAnimation] = useState(
     !highlightRanking
@@ -45,23 +48,34 @@ export function UpdateItem(props: Props) {
     !highlightInterval
   );
 
+  const onAnimationDone = props.onAnimationDone;
+
   // useEffect is necessary:
   //   https://react.dev/reference/react/useState#setstate-caveats
   //   Calling the set function during rendering is only allowed from within the currently rendering component.
   useEffect(() => {
-    const animationRequired = highlightRanking || highlightInterval;
-    const doneAnimation = doneRankingAnimation && doneIntervalAnimation;
-    if (animationRequired && doneAnimation) {
-      // if (props.onAnimationDone) {
-      //   props.onAnimationDone();
-      // }
+    if (phase === "highlight") {
+      const animationRequired = highlightRanking || highlightInterval;
+      if (animationRequired) {
+        const doneAnimation = doneRankingAnimation && doneIntervalAnimation;
+        if (doneAnimation) {
+          if (onAnimationDone) {
+            onAnimationDone();
+          }
+
+          setPhase("done");
+        }
+      } else {
+        setPhase("done");
+      }
     }
   }, [
     doneIntervalAnimation,
     doneRankingAnimation,
     highlightInterval,
     highlightRanking,
-    props,
+    phase,
+    onAnimationDone,
   ]);
 
   return (

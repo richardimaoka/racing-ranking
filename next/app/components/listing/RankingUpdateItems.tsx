@@ -58,6 +58,7 @@ function RankingUpdateItemsListing(props: Props) {
   // Setters and getters on the `targets` state
   //--------------------------------------------
   function setUpdateDone(name: string) {
+    console.log("RankingUpdateItems setUpdateDone", name);
     const index = targets.findIndex((i) => i.name === name);
     if (index === -1 || index >= targets.length) {
       const targetNames = "[" + targets.map((i) => i.name).join(", ") + "]";
