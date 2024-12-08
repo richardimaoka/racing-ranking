@@ -39,7 +39,7 @@ type AnimationPhase = "highlight" | "done";
 export function UpdateItem(props: Props) {
   const highlightRanking = props.currentRanking !== props.nextRanking;
   const highlightInterval = props.currentInterval !== props.nextInterval;
-  const [phase, setPhase] = useState("highlight");
+  const [phase, setPhase] = useState<AnimationPhase>("highlight");
 
   const [doneRankingAnimation, setDoneRankingAnimation] = useState(
     !highlightRanking
@@ -62,7 +62,6 @@ export function UpdateItem(props: Props) {
           if (onAnimationDone) {
             onAnimationDone();
           }
-
           setPhase("done");
         }
       } else {

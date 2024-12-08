@@ -42,8 +42,6 @@ type AnimationPhase = "fastest" | "update" | "done";
 
 function RankingUpdateItemsListing(props: Props) {
   const [phase, setPhase] = useState<AnimationPhase>("fastest");
-  const initTargets = extractUpdates(props.nextItems);
-  const [targets, setTargets] = useState<AnimationState[]>(initTargets);
 
   //--------------------------------------------
   // Items for each phase
@@ -55,10 +53,16 @@ function RankingUpdateItemsListing(props: Props) {
   const donePhaseItems = augmentUpdateInfo(props.currentItems, props.nextItems);
 
   //--------------------------------------------
+  // state
+  //--------------------------------------------
+  const [targets, setTargets] = useState<AnimationState[]>(
+    extractUpdates(donePhaseItems)
+  );
+
+  //--------------------------------------------
   // Setters and getters on the `targets` state
   //--------------------------------------------
   function setUpdateDone(name: string) {
-    console.log("RankingUpdateItems setUpdateDone", name);
     const index = targets.findIndex((i) => i.name === name);
     if (index === -1 || index >= targets.length) {
       const targetNames = "[" + targets.map((i) => i.name).join(", ") + "]";
