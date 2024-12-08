@@ -49,6 +49,10 @@ export function RankingPanelState(props: Props) {
 
   useEffect(() => {
     if (phase === "fetch" && nextCount <= 3) {
+      if (nextItems.length > 0) {
+        setCurrentItems(nextItems);
+      }
+
       // Fetch the next data
       const timeoutId = setTimeout(async () => {
         const updatedItems = await updateItems(nextCount);

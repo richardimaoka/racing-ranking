@@ -50,13 +50,17 @@ function RankingUpdateItemsListing(props: Props) {
     props.currentItems,
     props.nextItems
   );
-  const donePhaseItems = augmentUpdateInfo(props.currentItems, props.nextItems);
+  const updatePhaseItems = augmentUpdateInfo(
+    props.currentItems,
+    props.nextItems
+  );
+  const donePhaseItems = props.nextItems;
 
   //--------------------------------------------
   // state
   //--------------------------------------------
   const [targets, setTargets] = useState<AnimationState[]>(
-    extractUpdates(donePhaseItems)
+    extractUpdates(updatePhaseItems)
   );
 
   //--------------------------------------------
@@ -117,7 +121,7 @@ function RankingUpdateItemsListing(props: Props) {
     case "update": {
       return (
         <div className={styles.rankingList}>
-          {donePhaseItems.map((x) => {
+          {updatePhaseItems.map((x) => {
             const rankingChanged = x.ranking !== x.next?.ranking;
             const intervalChanged = x.interval !== x.next?.interval;
 
