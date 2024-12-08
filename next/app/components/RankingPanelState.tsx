@@ -11,14 +11,15 @@ import {
   skipPitInPhase,
   skipRetirementPhase,
   skipShufflePhase,
+  skipValueChangePhaseFake,
+  skipValueChangePhase,
 } from "./listing/listing";
 
 interface Props {
   initialItems: RankingItemProps[];
 }
 
-function incrementCount(count: number) {
-  const maxCount = 3;
+function incrementCount(count: number, maxCount: number) {
   if (count < maxCount) {
     return count + 1;
   } else {
@@ -45,10 +46,11 @@ export function RankingPanelState(props: Props) {
   const [currentItems, setCurrentItems] = useState(props.initialItems);
   const [nextItems, setNextItems] = useState([]);
 
-  console.log("RankingPanelState", phase, currentItems);
+  console.log("RankingPanelState", phase, nextCount, currentItems);
 
   useEffect(() => {
-    if (phase === "fetch" && nextCount <= 3) {
+    const maxCount = 10;
+    if (phase === "fetch") {
       if (nextItems.length > 0) {
         setCurrentItems(nextItems);
       }
@@ -57,7 +59,7 @@ export function RankingPanelState(props: Props) {
       const timeoutId = setTimeout(async () => {
         const updatedItems = await updateItems(nextCount);
         setNextItems(updatedItems);
-        setNextCount(incrementCount(nextCount));
+        setNextCount(incrementCount(nextCount, maxCount));
         setPhase("retire");
       }, 1000);
 
@@ -72,6 +74,7 @@ export function RankingPanelState(props: Props) {
       return <RankingPanelLayout items={currentItems} />;
     case "retire":
       if (skipRetirementPhase(nextItems)) {
+        console.log("skipRetirementPhase");
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
@@ -90,6 +93,7 @@ export function RankingPanelState(props: Props) {
       );
     case "pit in":
       if (skipPitInPhase(nextItems)) {
+        console.log("skipPitInPhase");
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
@@ -108,6 +112,7 @@ export function RankingPanelState(props: Props) {
       );
     case "shuffle":
       if (skipShufflePhase(currentItems, nextItems)) {
+        console.log("skipShufflePhase");
         // https://react.dev/reference/react/useState
         //   Calling the set function during rendering is only allowed from within the currently rendering component.
         //   React will discard its output and immediately attempt to render it again with the new state.
@@ -125,6 +130,13 @@ export function RankingPanelState(props: Props) {
         />
       );
     case "value change":
+      if (skipValueChangePhaseFake(nextCount)) {
+        console.log("skipValueChangePhase");
+        // https://react.dev/reference/react/useState
+        //   Calling the set function during rendering is only allowed from within the currently rendering component.
+        //   React will discard its output and immediately attempt to render it again with the new state.
+        setPhase("fetch");
+      }
       return (
         <RankingUpdateItems
           currentItems={currentItems}

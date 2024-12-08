@@ -159,3 +159,32 @@ export function skipShufflePhase(
 
   return true;
 }
+
+export function skipValueChangePhase(
+  currentItems: RankingItemProps[],
+  nextItems: RankingItemProps[]
+): boolean {
+  for (
+    let currentIndex = 0;
+    currentIndex < currentItems.length;
+    currentIndex++
+  ) {
+    const current = currentItems[currentIndex];
+    const next = nextItems.find((n) => n.name === current.name);
+
+    if (next) {
+      if (
+        next.interval !== current.interval ||
+        next.ranking !== current.ranking
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+export function skipValueChangePhaseFake(count: number): boolean {
+  return count === 10;
+}
